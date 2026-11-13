@@ -2,6 +2,12 @@
 
 ## Non publié
 
+### Lot 6 : démo publique et documentation
+- En-têtes de sécurité sur chaque réponse : CSP stricte avec un nonce par requête pour les scripts de l'importmap, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
+- Mode démo documenté : `TOTP_REQUIRED=0` et remise à zéro nocturne des fixtures
+- README complet : profils, comptes de démonstration, règles de progression, organisation du code, sécurité
+- Suppression du journal de bienvenue d'AssetMapper dans `app.js`
+
 ### Lot 5 : tableaux de bord et progression
 - Calcul de progression sans base de données (`src/Progress`) : niveau courant = dernière évaluation, moyenne par bloc et par apprenti, compétences non évaluées comptées à 0 et signalées, reste à valider (niveau inférieur à 3)
 - École : progression de chaque apprenti par promotion et moyenne de la promotion

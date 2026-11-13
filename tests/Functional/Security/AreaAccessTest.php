@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\Security;
 
 use App\Controller\DashboardController;
+use App\EventSubscriber\SecurityHeadersSubscriber;
 use App\DataFixtures\UserFixtures;
 use App\Tests\Support\AppWebTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -10,6 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 /** Cloisonnement des espaces : chaque profil n'entre que dans le sien. */
 #[CoversClass(DashboardController::class)]
+#[CoversClass(SecurityHeadersSubscriber::class)]
 final class AreaAccessTest extends AppWebTestCase
 {
     /** @return iterable<string, array{string, string, int}> */
@@ -48,6 +50,17 @@ final class AreaAccessTest extends AppWebTestCase
         $this->aClient->request('GET', $pPath);
 
         self::assertResponseRedirects('/connexion');
+    }
+
+    public function testPagesCarryTheCspNonceOnTheirScripts(): void
+    {
+        $vCrawler = $this->aClient->request('GET', '/connexion');
+
+        $vPolicy = (string) $this->aClient->getResponse()->headers->get('Content-Security-Policy');
+        $vNonce = $vCrawler->filter('script[type="importmap"]')->attr('nonce');
+        self::assertNotNull($vNonce);
+        self::assertStringContainsString("'nonce-".$vNonce."'", $vPolicy);
+        self::assertResponseHeaderSame('X-Frame-Options', 'DENY');
     }
 
     public function testHealthStaysPublic(): void
