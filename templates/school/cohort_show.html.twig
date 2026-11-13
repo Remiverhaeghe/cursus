@@ -17,7 +17,7 @@
                 <tbody>
                     {% for apprenticeship in cohort.apprenticeships %}
                         <tr>
-                            <td>{{ apprenticeship.apprentice.fullName }}</td>
+                            <td><a href="{{ path('app_tracking_show', {id: apprenticeship.id}) }}">{{ apprenticeship.apprentice.fullName }}</a></td>
                             <td>{{ apprenticeship.tutor.fullName }}</td>
                             <td>{{ apprenticeship.company.name }}</td>
                             <td>{{ apprenticeship.startDate|date('d/m/Y') }} → {{ apprenticeship.endDate|date('d/m/Y') }}</td>

@@ -2,6 +2,14 @@
 
 ## Non publié
 
+### Lot 4 : évaluations école et entreprise
+- Évaluations datées (`Evaluation`) : niveau de 0 à 4 (`CompetenceLevel`), contexte école ou entreprise (`EvaluationContext`), commentaire facultatif ; une évaluation n'est jamais modifiée
+- Règles vérifiées à la création : compétence de la formation de l'apprenti, l'école note « école » et le tuteur « entreprise », l'évaluateur suit bien le contrat
+- Page de suivi `/suivi/{id}` : historique du plus récent au plus ancien, formulaire pour l'école responsable et le tuteur, consultation seule pour l'apprenti ; accès testé pour chaque profil
+- Valeurs forgées refusées (niveau 5 ou négatif, compétence d'une autre formation)
+- Journal de chaque évaluation enregistrée (identifiants seulement)
+- Fixtures : historique fictif sur plusieurs mois
+
 ### Lot 3 : promotions, entreprises et contrats
 - Entreprises d'accueil (`Company`), promotions par formation (`Cohort`) et contrats (`Apprenticeship`) reliant apprenti, tuteur, entreprise et promotion
 - Un contrat refuse un apprenti ou un tuteur du mauvais profil, et une fin qui ne suit pas le début
