@@ -5,8 +5,10 @@ namespace App\Controller\School;
 use App\Entity\CompetenceBlock;
 use App\Entity\Formation;
 use App\Entity\User;
+use App\Form\CohortType;
 use App\Form\CompetenceBlockType;
 use App\Form\CompetenceType;
+use App\Form\Data\CohortData;
 use App\Form\Data\CompetenceBlockData;
 use App\Form\Data\CompetenceData;
 use App\Form\Data\FormationData;
@@ -23,7 +25,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/** Formations de l'école et leur référentiel : blocs puis compétences. */
+/** Formations de l'école : référentiel (blocs puis compétences) et promotions. */
 #[Route('/ecole')]
 final class FormationController extends AbstractController
 {
@@ -95,20 +97,44 @@ final class FormationController extends AbstractController
         return $this->redirectToRoute('app_school_formation_show', ['id' => $pBlock->getFormation()->getId()]);
     }
 
+    #[Route('/formations/{id}/promotions', name: 'app_school_cohort_new', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(FormationVoter::MANAGE, subject: 'pFormation')]
+    public function newCohort(Formation $pFormation, Request $pRequest): Response
+    {
+        $vData = new CohortData();
+        $vForm = $this->createForm(CohortType::class, $vData);
+        $vForm->handleRequest($pRequest);
+        if (!$vForm->isSubmitted() || !$vForm->isValid()) {
+            return $this->renderShow($pFormation, pCohortForm: $vForm);
+        }
+        $vCohort = $vData->toCohort($pFormation);
+        $this->aEntityManager->persist($vCohort);
+        $this->aEntityManager->flush();
+        $this->addFlash('success', 'Promotion ouverte.');
+
+        return $this->redirectToRoute('app_school_cohort_show', ['id' => $vCohort->getId()]);
+    }
+
     /** @param array<int, FormInterface> $pCompetenceForms formulaires déjà soumis, par identifiant de bloc */
-    private function renderShow(Formation $pFormation, ?FormInterface $pBlockForm = null, array $pCompetenceForms = []): Response
+    private function renderShow(
+        Formation $pFormation,
+        ?FormInterface $pBlockForm = null,
+        array $pCompetenceForms = [],
+        ?FormInterface $pCohortForm = null,
+    ): Response
     {
         $vCompetenceViews = [];
         foreach ($pFormation->getBlocks() as $vBlock) {
             $vBlockId = (int) $vBlock->getId();
             $vCompetenceViews[$vBlockId] = ($pCompetenceForms[$vBlockId] ?? $this->competenceForm($vBlock, new CompetenceData()))->createView();
         }
-        $vSubmitted = null !== $pBlockForm || [] !== $pCompetenceForms;
+        $vSubmitted = null !== $pBlockForm || [] !== $pCompetenceForms || null !== $pCohortForm;
 
         return $this->render('school/formation_show.html.twig', [
             'formation' => $pFormation,
             'block_form' => ($pBlockForm ?? $this->createForm(CompetenceBlockType::class, new CompetenceBlockData()))->createView(),
             'competence_forms' => $vCompetenceViews,
+            'cohort_form' => ($pCohortForm ?? $this->createForm(CohortType::class, new CohortData()))->createView(),
         ], new Response(status: $vSubmitted ? 422 : 200));
     }
 

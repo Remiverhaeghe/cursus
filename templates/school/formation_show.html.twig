@@ -7,7 +7,29 @@
     <h1>{{ formation.name }}</h1>
     <p class="muted">{{ formation.diploma }}</p>
 
-    {% block formation_extra %}{% endblock %}
+    <h2>Promotions</h2>
+    <section class="card">
+        {% if formation.cohorts is empty %}
+            <p class="muted">Aucune promotion ouverte.</p>
+        {% else %}
+            <table>
+                <thead><tr><th>Promotion</th><th>Entrée</th><th>Apprentis</th></tr></thead>
+                <tbody>
+                    {% for cohort in formation.cohorts %}
+                        <tr>
+                            <td><a href="{{ path('app_school_cohort_show', {id: cohort.id}) }}">{{ cohort.name }}</a></td>
+                            <td>{{ cohort.startYear }}</td>
+                            <td>{{ cohort.apprenticeships|length }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {{ form_start(cohort_form, {action: path('app_school_cohort_new', {id: formation.id}), attr: {class: 'form'}}) }}
+            {{ form_widget(cohort_form) }}
+            <button type="submit">Ouvrir la promotion</button>
+        {{ form_end(cohort_form) }}
+    </section>
 
     <h2>Référentiel de compétences</h2>
     {% for competence_block in formation.blocks %}

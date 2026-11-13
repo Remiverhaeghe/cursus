@@ -2,6 +2,14 @@
 
 ## Non publié
 
+### Lot 3 : promotions, entreprises et contrats
+- Entreprises d'accueil (`Company`), promotions par formation (`Cohort`) et contrats (`Apprenticeship`) reliant apprenti, tuteur, entreprise et promotion
+- Un contrat refuse un apprenti ou un tuteur du mauvais profil, et une fin qui ne suit pas le début
+- Pages école : entreprises, ouverture d'une promotion depuis sa formation, rattachement d'un apprenti (seuls les comptes du bon profil sont proposés)
+- Voter `APPRENTICESHIP_VIEW` / `APPRENTICESHIP_EVALUATE` : école responsable, tuteur du contrat et apprenti concerné (consultation seule), testé pour 7 profils et 2 actions
+- `FORMATION_MANAGE` couvre aussi les promotions
+- Fixtures : deux entreprises, deux promotions, quatre contrats fictifs
+
 ### Lot 2 : formations et référentiel
 - Formations (`Formation`) rattachées à un responsable de l'école, blocs (`CompetenceBlock`) numérotés dans l'ordre de création, compétences (`Competence`)
 - Pages école : liste et création des formations, référentiel d'une formation avec ajout de blocs et de compétences

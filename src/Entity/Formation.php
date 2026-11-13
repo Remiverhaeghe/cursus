@@ -32,6 +32,11 @@ class Formation
     #[ORM\OrderBy(['aPosition' => 'ASC'])]
     private Collection $aBlocks;
 
+    /** @var Collection<int, Cohort> */
+    #[ORM\OneToMany(targetEntity: Cohort::class, mappedBy: 'aFormation')]
+    #[ORM\OrderBy(['aStartYear' => 'DESC'])]
+    private Collection $aCohorts;
+
     public function __construct(string $pName, string $pDiploma, User $pManager)
     {
         if (!$pManager->hasRole(UserRole::School)) {
@@ -41,6 +46,7 @@ class Formation
         $this->aDiploma = $pDiploma;
         $this->aManager = $pManager;
         $this->aBlocks = new ArrayCollection();
+        $this->aCohorts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -78,6 +84,18 @@ class Formation
     public function attachBlock(CompetenceBlock $pBlock): void
     {
         $this->aBlocks->add($pBlock);
+    }
+
+    /** @return Collection<int, Cohort> */
+    public function getCohorts(): Collection
+    {
+        return $this->aCohorts;
+    }
+
+    /** Appelé par le constructeur de la promotion pour garder les deux côtés de la relation à jour. */
+    public function attachCohort(Cohort $pCohort): void
+    {
+        $this->aCohorts->add($pCohort);
     }
 
     public function nextBlockPosition(): int

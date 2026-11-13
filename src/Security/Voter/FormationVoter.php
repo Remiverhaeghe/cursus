@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Cohort;
 use App\Entity\Competence;
 use App\Entity\CompetenceBlock;
 use App\Entity\Formation;
@@ -11,9 +12,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Gestion d'une formation et de son référentiel : réservée au responsable de l'école qui la porte.
+ * Gestion d'une formation, de son référentiel et de ses promotions : réservée au responsable de l'école qui la porte.
  *
- * @extends Voter<string, Formation|CompetenceBlock|Competence>
+ * @extends Voter<string, Formation|CompetenceBlock|Competence|Cohort>
  */
 final class FormationVoter extends Voter
 {
@@ -22,7 +23,10 @@ final class FormationVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return self::MANAGE === $attribute
-            && ($subject instanceof Formation || $subject instanceof CompetenceBlock || $subject instanceof Competence);
+            && ($subject instanceof Formation
+                || $subject instanceof CompetenceBlock
+                || $subject instanceof Competence
+                || $subject instanceof Cohort);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
