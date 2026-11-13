@@ -1,0 +1,147 @@
+<?php
+
+namespace App\Entity;
+
+use App\Enum\UserRole;
+use App\Repository\UserRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+/** Compte d'un membre de l'école, d'un tuteur ou d'un apprenti, avec sa double authentification facultative. */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'app_user')]
+#[ORM\UniqueConstraint(name: 'uniq_app_user_email', columns: ['email'])]
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $aId = null;
+
+    /** @var non-empty-string */
+    #[ORM\Column(length: 180)]
+    private string $aEmail;
+
+    #[ORM\Column]
+    private string $aPassword = '';
+
+    #[ORM\Column(length: 20, enumType: UserRole::class)]
+    private UserRole $aRole;
+
+    #[ORM\Column(length: 100)]
+    private string $aFirstName;
+
+    #[ORM\Column(length: 100)]
+    private string $aLastName;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $aTotpSecret = null;
+
+    public function __construct(string $pEmail, UserRole $pRole, string $pFirstName, string $pLastName)
+    {
+        $vEmail = mb_strtolower(trim($pEmail));
+        if ('' === $vEmail) {
+            throw new \InvalidArgumentException('L\'adresse e-mail est obligatoire.');
+        }
+        $this->aEmail = $vEmail;
+        $this->aRole = $pRole;
+        $this->aFirstName = $pFirstName;
+        $this->aLastName = $pLastName;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->aId;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->aEmail;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->aEmail;
+    }
+
+    public function getRole(): UserRole
+    {
+        return $this->aRole;
+    }
+
+    public function hasRole(UserRole $pRole): bool
+    {
+        return $pRole === $this->aRole;
+    }
+
+    /** @return list<string> */
+    public function getRoles(): array
+    {
+        return [$this->aRole->value, 'ROLE_USER'];
+    }
+
+    public function getPassword(): string
+    {
+        return $this->aPassword;
+    }
+
+    public function setPassword(string $pHashedPassword): void
+    {
+        $this->aPassword = $pHashedPassword;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->aFirstName;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->aLastName;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->aFirstName.' '.$this->aLastName;
+    }
+
+    public function enableTotp(string $pSecret): void
+    {
+        $this->aTotpSecret = $pSecret;
+    }
+
+    public function disableTotp(): void
+    {
+        $this->aTotpSecret = null;
+    }
+
+    public function isTotpAuthenticationEnabled(): bool
+    {
+        return null !== $this->aTotpSecret;
+    }
+
+    public function getTotpAuthenticationUsername(): string
+    {
+        return $this->aEmail;
+    }
+
+    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+    {
+        if (null === $this->aTotpSecret) {
+            return null;
+        }
+
+        $rConfiguration = new TotpConfiguration($this->aTotpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);
+
+        return $rConfiguration;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getFullName();
+    }
+}

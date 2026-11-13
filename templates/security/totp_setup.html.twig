@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Activer la double authentification{% endblock %}
+
+{% block body %}
+    <section class="card narrow">
+        <h1>Activer la double authentification</h1>
+        <p>Scanne ce code avec une application d'authentification (FreeOTP, Aegis, Google Authenticator…), puis saisis le code affiché.</p>
+        <img class="qr" src="{{ qr_code }}" alt="Code QR de configuration" width="220" height="220">
+        <p>Saisie manuelle : <code id="totp-secret">{{ secret }}</code></p>
+        {% if error %}
+            <p class="flash flash-error" role="alert">{{ error }}</p>
+        {% endif %}
+        <form method="post" class="form">
+            <label for="code">Code à 6 chiffres</label>
+            <input type="text" id="code" name="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" required>
+            <input type="hidden" name="_token" value="{{ csrf_token('totp_setup') }}">
+            <button type="submit">Activer</button>
+        </form>
+        <p><a href="{{ logout_path() }}">Se déconnecter</a></p>
+    </section>
+{% endblock %}

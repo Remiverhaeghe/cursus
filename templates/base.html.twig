@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Cursus{% endblock %} · Cursus</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%232f5d8a%22/><text x=%2216%22 y=%2222%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22white%22>C</text></svg>">
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
-
-        {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphp_hot_reload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphp_hot_reload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header class="topbar">
+            <a class="brand" href="{{ path('app_home') }}">Cursus</a>
+            {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
+                <nav class="menu">
+                    {% block menu %}{% include 'partials/_menu.html.twig' %}{% endblock %}
+                </nav>
+                <div class="account">
+                    <span>{{ app.user.fullName }} · {{ app.user.role.label }}</span>
+                    <a href="{{ logout_path() }}">Déconnexion</a>
+                </div>
+            {% endif %}
+        </header>
+        <main class="page">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <p class="flash flash-{{ type }}" role="status">{{ message }}</p>
+                {% endfor %}
+            {% endfor %}
+            {% block body %}{% endblock %}
+        </main>
+        <footer class="footer">Cursus · démonstration avec des données fictives</footer>
     </body>
 </html>

@@ -25,6 +25,20 @@ docker compose up -d --wait
 docker compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
+Pour charger les comptes de démonstration (fictifs) :
+
+```
+docker compose exec php bin/console doctrine:fixtures:load --no-interaction
+```
+
+| Profil | E-mail | Mot de passe |
+|---|---|---|
+| École | `claire.fontaine@cursus.test` | `demo-cursus` |
+| Tuteur | `marc.lefebvre@cursus.test` | `demo-cursus` |
+| Apprenti | `lucas.bernard@cursus.test` | `demo-cursus` |
+
+L'école et les tuteurs activent la double authentification à leur première connexion (code QR à scanner). Mets `TOTP_REQUIRED=0` dans `.env.local` pour la désactiver en local.
+
 L'application répond sur https://localhost:8443 (HTTP sur le port 8080). Les ports sont définis dans `.env` ; modifie-les s'ils sont déjà pris sur ta machine. Les courriers de développement arrivent dans Mailpit.
 
 ## Contrôles qualité
@@ -40,7 +54,7 @@ La CI rejoue ces contrôles à chaque push et chaque pull request.
 
 ## Avancement
 
-Voir le [CHANGELOG](CHANGELOG.md). Lot en cours : 0, squelette et qualité.
+Voir le [CHANGELOG](CHANGELOG.md). Lot en cours : 1, comptes et rôles.
 
 ## Licence
 
