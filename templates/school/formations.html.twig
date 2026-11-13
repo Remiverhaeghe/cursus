@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formations{% endblock %}
+
+{% block body %}
+    <h1>Mes formations</h1>
+    <section class="card">
+        {% if formations is empty %}
+            <p class="muted">Aucune formation pour l'instant.</p>
+        {% else %}
+            <table>
+                <thead><tr><th>Formation</th><th>Diplôme</th><th>Blocs</th></tr></thead>
+                <tbody>
+                    {% for formation in formations %}
+                        <tr>
+                            <td><a href="{{ path('app_school_formation_show', {id: formation.id}) }}">{{ formation.name }}</a></td>
+                            <td>{{ formation.diploma }}</td>
+                            <td>{{ formation.blocks|length }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+    <section class="card">
+        <h2>Nouvelle formation</h2>
+        {{ form_start(form, {attr: {class: 'form'}}) }}
+            {{ form_widget(form) }}
+            <button type="submit">Créer la formation</button>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

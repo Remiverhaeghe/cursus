@@ -67,6 +67,26 @@ abstract class AppWebTestCase extends WebTestCase
         return $rUser;
     }
 
+    /**
+     * Retrouve une entité des fixtures par ses attributs.
+     *
+     * @template T of object
+     *
+     * @param class-string<T>      $pClass
+     * @param array<string, mixed> $pCriteria
+     *
+     * @return T
+     */
+    protected function find(string $pClass, array $pCriteria): object
+    {
+        $rEntity = $this->entityManager()->getRepository($pClass)->findOneBy($pCriteria);
+        if (null === $rEntity) {
+            throw new \LogicException(\sprintf('Donnée de test absente : %s', $pClass));
+        }
+
+        return $rEntity;
+    }
+
     /** Recharge une entité depuis la base, après une requête qui l'a modifiée. */
     protected function refreshed(User $pUser): User
     {

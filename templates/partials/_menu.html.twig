@@ -1,5 +1,6 @@
 {% if is_granted('ROLE_SCHOOL') %}
     <a href="{{ path('app_school_home') }}">Tableau de bord</a>
+    <a href="{{ path('app_school_formations') }}">Formations</a>
 {% elseif is_granted('ROLE_TUTOR') %}
     <a href="{{ path('app_tutor_home') }}">Mes apprentis</a>
 {% elseif is_granted('ROLE_APPRENTICE') %}

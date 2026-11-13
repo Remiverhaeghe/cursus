@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ formation.name }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_school_formations') }}">← Mes formations</a></p>
+    <h1>{{ formation.name }}</h1>
+    <p class="muted">{{ formation.diploma }}</p>
+
+    {% block formation_extra %}{% endblock %}
+
+    <h2>Référentiel de compétences</h2>
+    {% for competence_block in formation.blocks %}
+        <section class="card">
+            <h3>{{ competence_block.code }} · {{ competence_block.title }}</h3>
+            {% if competence_block.competences is empty %}
+                <p class="muted">Aucune compétence dans ce bloc.</p>
+            {% else %}
+                <table>
+                    <thead><tr><th>Code</th><th>Compétence</th></tr></thead>
+                    <tbody>
+                        {% for competence in competence_block.competences %}
+                            <tr><td>{{ competence.code }}</td><td>{{ competence.label }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            {% set competence_form = competence_forms[competence_block.id] %}
+            {{ form_start(competence_form, {attr: {class: 'form'}}) }}
+                {{ form_widget(competence_form) }}
+                <button type="submit">Ajouter la compétence</button>
+            {{ form_end(competence_form) }}
+        </section>
+    {% else %}
+        <p class="muted">Commence par créer un bloc de compétences.</p>
+    {% endfor %}
+
+    <section class="card">
+        <h2>Nouveau bloc</h2>
+        {{ form_start(block_form, {action: path('app_school_block_new', {id: formation.id}), attr: {class: 'form'}}) }}
+            {{ form_widget(block_form) }}
+            <button type="submit">Ajouter le bloc</button>
+        {{ form_end(block_form) }}
+    </section>
+{% endblock %}

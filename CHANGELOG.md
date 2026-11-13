@@ -2,6 +2,13 @@
 
 ## Non publié
 
+### Lot 2 : formations et référentiel
+- Formations (`Formation`) rattachées à un responsable de l'école, blocs (`CompetenceBlock`) numérotés dans l'ordre de création, compétences (`Competence`)
+- Pages école : liste et création des formations, référentiel d'une formation avec ajout de blocs et de compétences
+- Voter `FORMATION_MANAGE` : seul le responsable de la formation la consulte et la modifie, testé pour chaque profil sur la formation, le bloc et la compétence
+- Formulaires branchés sur des objets de saisie typés (`src/Form/Data`), entités toujours créées valides
+- Fixtures : deux formations fictives, une par responsable
+
 ### Lot 1 : comptes et rôles
 - Comptes école, tuteur et apprenti (`User`), mots de passe hachés en Argon2id
 - Connexion par formulaire avec jeton CSRF, limitation à 5 essais par 15 minutes, message d'erreur identique pour un compte inconnu ou un mauvais mot de passe
