@@ -54,7 +54,7 @@ La CI rejoue ces contrôles à chaque push et chaque pull request.
 
 ## Avancement
 
-Voir le [CHANGELOG](CHANGELOG.md). Lot en cours : 4, évaluations école et entreprise.
+Voir le [CHANGELOG](CHANGELOG.md). Lot en cours : 5, tableaux de bord et progression.
 
 ## Licence
 

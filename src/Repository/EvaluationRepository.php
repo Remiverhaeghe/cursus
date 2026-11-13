@@ -36,4 +36,33 @@ class EvaluationRepository extends ServiceEntityRepository
 
         return $rEvaluations;
     }
+
+    /**
+     * Évaluations de plusieurs contrats en une requête, rangées par identifiant de contrat.
+     *
+     * @param list<Apprenticeship> $pApprenticeships
+     *
+     * @return array<int, list<Evaluation>>
+     */
+    public function findGroupedByApprenticeship(array $pApprenticeships): array
+    {
+        if ([] === $pApprenticeships) {
+            return [];
+        }
+        /** @var list<Evaluation> $vEvaluations */
+        $vEvaluations = $this->createQueryBuilder('e')
+            ->andWhere('e.aApprenticeship IN (:apprenticeships)')
+            ->setParameter('apprenticeships', $pApprenticeships)
+            ->orderBy('e.aEvaluatedAt')
+            ->addOrderBy('e.aId')
+            ->getQuery()
+            ->getResult();
+
+        $rGroups = [];
+        foreach ($vEvaluations as $vEvaluation) {
+            $rGroups[(int) $vEvaluation->getApprenticeship()->getId()][] = $vEvaluation;
+        }
+
+        return $rGroups;
+    }
 }

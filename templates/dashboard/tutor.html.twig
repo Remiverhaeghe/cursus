@@ -1,7 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Espace Tuteur{% endblock %}
+{% block title %}Mes apprentis{% endblock %}
 
 {% block body %}
     <h1>Bonjour {{ user.firstName }}</h1>
+    <section class="card">
+        <h2>Mes apprentis</h2>
+        {% if progresses is empty %}
+            <p class="muted">Aucun apprenti ne t'est confié pour l'instant.</p>
+        {% else %}
+            {% include 'partials/_apprentices_table.html.twig' %}
+        {% endif %}
+    </section>
 {% endblock %}

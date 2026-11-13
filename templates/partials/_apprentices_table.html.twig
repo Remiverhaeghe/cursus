@@ -1,0 +1,16 @@
+{# Tableau de synthèse : un contrat par ligne, avec sa progression globale #}
+<table class="apprentices">
+    <thead><tr><th>Apprenti</th><th>Entreprise</th><th>Progression</th><th>Validées</th><th>Non évaluées</th></tr></thead>
+    <tbody>
+        {% for progress in progresses %}
+            {% set apprenticeship = progress.aApprenticeship %}
+            <tr>
+                <td><a href="{{ path('app_tracking_show', {id: apprenticeship.id}) }}">{{ apprenticeship.apprentice.fullName }}</a></td>
+                <td>{{ apprenticeship.company.name }}</td>
+                <td><progress max="100" value="{{ progress.percentage }}">{{ progress.percentage }} %</progress> {{ progress.average|number_format(1, ',') }} / 4</td>
+                <td>{{ progress.validatedCount }} / {{ progress.competences|length }}</td>
+                <td>{% if progress.unevaluatedCount > 0 %}<span class="badge badge-warning">{{ progress.unevaluatedCount }}</span>{% else %}0{% endif %}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -2,6 +2,14 @@
 
 ## Non publié
 
+### Lot 5 : tableaux de bord et progression
+- Calcul de progression sans base de données (`src/Progress`) : niveau courant = dernière évaluation, moyenne par bloc et par apprenti, compétences non évaluées comptées à 0 et signalées, reste à valider (niveau inférieur à 3)
+- École : progression de chaque apprenti par promotion et moyenne de la promotion
+- Tuteur : ses apprentis seulement, avec progression, compétences validées et non évaluées
+- Apprenti : progression par bloc et par compétence, courbe d'évolution (SVG sans JavaScript), reste à valider, lien vers l'historique
+- Page de suivi enrichie de la progression détaillée
+- Évaluations de plusieurs contrats chargées en une requête
+
 ### Lot 4 : évaluations école et entreprise
 - Évaluations datées (`Evaluation`) : niveau de 0 à 4 (`CompetenceLevel`), contexte école ou entreprise (`EvaluationContext`), commentaire facultatif ; une évaluation n'est jamais modifiée
 - Règles vérifiées à la création : compétence de la formation de l'apprenti, l'école note « école » et le tuteur « entreprise », l'évaluateur suit bien le contrat

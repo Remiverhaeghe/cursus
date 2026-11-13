@@ -10,7 +10,7 @@
         Contrat du {{ apprenticeship.startDate|date('d/m/Y') }} au {{ apprenticeship.endDate|date('d/m/Y') }}
     </p>
 
-    {% block progress %}{% endblock %}
+    {% include 'partials/_progress.html.twig' with {progress: progress, show_remaining: true} %}
 
     {% if form %}
         <section class="card">

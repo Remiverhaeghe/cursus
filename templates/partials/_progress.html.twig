@@ -1,0 +1,53 @@
+{# Progression détaillée d'un contrat : blocs, compétences, courbe et reste à valider #}
+<section class="card">
+    <h2>Progression</h2>
+    <p>
+        <progress max="100" value="{{ progress.percentage }}">{{ progress.percentage }} %</progress>
+        Moyenne {{ progress.average|number_format(1, ',') }} / 4 · {{ progress.validatedCount }} compétence(s) validée(s) sur {{ progress.competences|length }}
+    </p>
+    {% for block_progress in progress.aBlocks %}
+        <h3>{{ block_progress.aBlock }} <span class="muted">· {{ block_progress.average|number_format(1, ',') }} / 4</span></h3>
+        {% if block_progress.unevaluated is not empty %}
+            <p class="badge badge-warning">{{ block_progress.unevaluated|length }} compétence(s) jamais évaluée(s), comptée(s) à 0</p>
+        {% endif %}
+        <table class="competences">
+            <thead><tr><th>Compétence</th><th>Niveau courant</th><th>Évolution</th><th>Dernière évaluation</th></tr></thead>
+            <tbody>
+                {% for competence in block_progress.aCompetences %}
+                    <tr>
+                        <td>{{ competence.aCompetence }}</td>
+                        <td>
+                            {% if competence.current %}
+                                <span class="level level-{{ competence.current.value }}">{{ competence.current.value }}</span> {{ competence.current.label }}
+                            {% else %}
+                                <span class="badge badge-warning">Non évaluée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if competence.aHistory|length > 1 %}
+                                <svg class="sparkline" width="120" height="32" viewBox="-4 -4 128 40" role="img" aria-label="Évolution des niveaux : {{ competence.aHistory|map(l => l.value)|join(', ') }}">
+                                    <polyline points="{{ competence.sparklinePoints(120, 32) }}"/>
+                                </svg>
+                            {% endif %}
+                        </td>
+                        <td>{{ competence.aLastEvaluatedAt ? competence.aLastEvaluatedAt|date('d/m/Y') : '—' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</section>
+{% if show_remaining|default(false) %}
+    <section class="card">
+        <h2>Reste à valider</h2>
+        {% if progress.remaining is empty %}
+            <p>Toutes les compétences sont validées.</p>
+        {% else %}
+            <ul class="remaining">
+                {% for competence in progress.remaining %}
+                    <li>{{ competence.aCompetence }} — {{ competence.current ? competence.current.label : 'jamais évaluée' }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+{% endif %}
