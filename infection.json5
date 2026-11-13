@@ -1,0 +1,23 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "src"
+        ],
+        "excludes": [
+            "DataFixtures",
+            "Kernel.php"
+        ]
+    },
+    "tmpDir": "var/infection",
+    "timeout": 10,
+    "minMsi": 95,
+    "minCoveredMsi": 95,
+    "logs": {
+        "text": "var/infection/infection.log",
+        "summary": "var/infection/summary.log"
+    },
+    "mutators": {
+        "@default": true
+    }
+}

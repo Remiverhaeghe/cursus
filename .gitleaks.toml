@@ -1,0 +1,9 @@
+# Valeurs de développement et de test, jamais utilisées en production
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+    '''^\.env\.dev$''',
+    '''^\.env\.test$''',
+]
