@@ -137,7 +137,11 @@ final class FormTypesTest extends KernelTestCase
         self::assertSame('Les deux mots de passe ne correspondent pas.', $vPassword->getConfig()->getOption('invalid_message'));
     }
 
-    /** @return array<string, string> */
+    /**
+     * @param FormInterface<mixed> $pForm
+     *
+     * @return array<string, string>
+     */
     private function labels(FormInterface $pForm): array
     {
         $rLabels = [];

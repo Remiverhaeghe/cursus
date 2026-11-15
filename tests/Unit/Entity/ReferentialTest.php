@@ -73,6 +73,7 @@ final class ReferentialTest extends TestCase
         self::assertSame('B1', $vBlock->getCode());
         self::assertSame('Front-end', $vBlock->getTitle());
         self::assertSame('B1 · Front-end', (string) $vBlock);
+        self::assertSame('B1 · Front-end', $vBlock->label());
         self::assertNull($vCompetence->getId());
         self::assertSame('C1.1', $vCompetence->getCode());
         self::assertSame('Maquetter', $vCompetence->getLabel());
