@@ -84,7 +84,26 @@ docker compose exec php vendor/bin/php-cs-fixer fix --dry-run --diff
 docker compose exec php vendor/bin/infection --threads=1
 ```
 
-Les tests fonctionnels rechargent les fixtures avant chaque test, sur la base de test (`-e test`). La CI rejoue ces contrôles à chaque push et chaque pull request.
+La première fois, et après chaque nouvelle migration ou fixture, prépare la base de test :
+
+```
+docker compose exec php bin/prepare-test-databases
+```
+
+Les tests tournent hors debug (quatre fois plus vite sous Docker pour Windows) ; `tests/bootstrap.php` vide le cache de test dès qu'un fichier de `config`, `src` ou `templates` a changé. Les fixtures sont chargées une seule fois ; chaque test fonctionnel tourne dans une transaction annulée à la fin (`dama/doctrine-test-bundle`). La CI rejoue ces contrôles à chaque push et chaque pull request.
+
+### Aller plus vite en local
+
+| Besoin | Commande |
+|---|---|
+| Règles métier seulement (quelques secondes) | `docker compose exec php bin/phpunit --testsuite unit` |
+| Pages et accès | `docker compose exec php bin/phpunit --testsuite functional` |
+| Un seul fichier ou un seul test | `docker compose exec php bin/phpunit --filter TrackingControllerTest` |
+| Mutation sur un dossier | `docker compose exec php vendor/bin/infection --filter=src/Progress --threads=1` |
+| Mutation sur les lignes modifiées | `docker compose exec php vendor/bin/infection --git-diff-lines --git-diff-base=origin/main --threads=1` |
+| Mutation en parallèle | `docker compose exec php bin/prepare-test-databases 4`, puis `... infection --threads=4` |
+
+Infection lance une base par thread (`app_test1` à `app_test4`) grâce à `TEST_TOKEN` : prépare-les avant d'augmenter `--threads`.
 
 ## Avancement
 

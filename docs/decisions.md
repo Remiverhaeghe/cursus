@@ -33,3 +33,7 @@ Contexte : les évaluations gardent leur évaluateur et les contrats leur appren
 ## 2026-11-15 · Démo non indexée
 
 Contexte : démonstration à données fictives, accessible depuis le portfolio. Décision : `robots.txt` interdit tout et chaque page porte `noindex` ; pas de sitemap ni d'image d'aperçu. À revoir si une page de présentation publique est ajoutée.
+
+## 2026-11-15 · Tests hors debug et transactions annulées
+
+Contexte : la suite fonctionnelle prenait 3 min 33 et Infection sautait la plupart des mutants, faute de temps. Mesure : le mode debug vérifie des centaines de fichiers à chaque démarrage du noyau, très lent à travers le dossier partagé de Docker pour Windows ; hors debug, la même suite prend 53 s. Décision : `APP_DEBUG=0` dans `phpunit.dist.xml`, cache de test vidé par `tests/bootstrap.php` quand un fichier du projet change, fixtures chargées une fois et chaque test annulé par `dama/doctrine-test-bundle`. Écarté : sortir `vendor/` du dossier partagé, qui priverait l'éditeur des sources des dépendances.

@@ -148,7 +148,7 @@ final class PasswordResetTest extends AppWebTestCase
 
     public function testChangingThePasswordClosesOtherSessions(): void
     {
-        $vUser = $this->loginAs(UserFixtures::APPRENTICE);
+        $vOldHash = $this->loginAs(UserFixtures::APPRENTICE)->getPassword();
         $this->aClient->request('GET', '/apprenti');
         self::assertResponseIsSuccessful();
 
@@ -162,7 +162,7 @@ final class PasswordResetTest extends AppWebTestCase
         $this->aClient->request('GET', '/apprenti');
 
         self::assertResponseRedirects('/connexion');
-        self::assertNotSame($vUser->getPassword(), $this->refreshed($vUser)->getPassword());
+        self::assertNotSame($vOldHash, $this->user(UserFixtures::APPRENTICE)->getPassword());
     }
 
     private function requestLink(string $pEmail): void

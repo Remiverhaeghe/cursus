@@ -66,7 +66,7 @@ final class PasswordResetController extends AbstractController
         $vForm = $this->createForm(NewPasswordType::class, $vData);
         $vForm->handleRequest($pRequest);
         if ($vForm->isSubmitted() && $vForm->isValid()) {
-            $this->aPasswordReset->reset($token, $vData->password);
+            $this->aPasswordReset->reset($token, (string) $vData->password);
             $this->addFlash('success', 'Mot de passe changé. Tu peux te connecter.');
 
             return $this->redirectToRoute('app_login');

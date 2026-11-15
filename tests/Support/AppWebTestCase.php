@@ -2,15 +2,14 @@
 
 namespace App\Tests\Support;
 
+use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-/** Base des tests fonctionnels : base de test rechargée avec les fixtures fictives avant chaque test. */
+/** Base des tests fonctionnels : fixtures fictives chargées une fois, chaque test annulé en fin de transaction. */
 abstract class AppWebTestCase extends WebTestCase
 {
     /** Secret TOTP de test, attribué aux comptes qui doivent avoir la double authentification active. */
@@ -21,9 +20,10 @@ abstract class AppWebTestCase extends WebTestCase
     protected function setUp(): void
     {
         $this->aClient = static::createClient(static::clientOptions());
-        $vEntityManager = $this->entityManager();
-        $vLoader = static::getContainer()->get('doctrine.fixtures.loader');
-        (new ORMExecutor($vEntityManager, new ORMPurger($vEntityManager)))->execute($vLoader->getFixtures());
+        // Fixtures chargées une seule fois par bin/prepare-test-databases ; DAMA annule chaque test à la fin
+        if (null === static::getContainer()->get(UserRepository::class)->findOneByEmail(UserFixtures::SCHOOL)) {
+            throw new \LogicException('Base de test vide : lance « docker compose exec php bin/prepare-test-databases ».');
+        }
     }
 
     /** @return array<string, mixed> options du noyau, par exemple `['debug' => false]` pour voir les vraies pages d'erreur */

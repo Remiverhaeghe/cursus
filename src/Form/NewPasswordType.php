@@ -23,7 +23,6 @@ final class NewPasswordType extends AbstractType
             'invalid_message' => 'Les deux mots de passe ne correspondent pas.',
             'first_options' => ['label' => 'Nouveau mot de passe', 'help' => '12 caractères au moins', 'attr' => ['autocomplete' => 'new-password']],
             'second_options' => ['label' => 'Confirmation', 'attr' => ['autocomplete' => 'new-password']],
-            'empty_data' => '',
         ]);
     }
 

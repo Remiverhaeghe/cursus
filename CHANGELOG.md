@@ -2,6 +2,14 @@
 
 ## Non publié
 
+### Tests plus rapides
+- Fixtures chargées une seule fois, chaque test fonctionnel annulé en fin de transaction (`dama/doctrine-test-bundle`)
+- Tests hors debug : suite fonctionnelle passée de 3 min 33 à 53 s sous Docker pour Windows ; cache de test vidé automatiquement quand le code change
+- Suites `unit` et `functional` séparées dans `phpunit.dist.xml`
+- Limite du mot de passe oublié testée avec un stockage en mémoire propre à chaque test
+- `bin/prepare-test-databases` : base de test et une base par thread d'Infection
+- Commandes rapides documentées dans le README
+
 ### Lot 7 : comptes et mise en ligne
 - Mot de passe oublié : lien à usage unique valable 30 minutes, seule l'empreinte du jeton en base, même réponse pour une adresse inconnue, 3 demandes par 15 minutes
 - Nouveau mot de passe de 12 caractères au moins, refusé s'il figure dans une fuite connue ; les autres sessions du compte sont fermées

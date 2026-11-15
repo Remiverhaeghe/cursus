@@ -20,6 +20,14 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+        rate_limiter:
+            # Compteurs en mémoire : gardés entre les requêtes d'un même test, vides au test suivant,
+            # séparés entre les threads d'Infection (le cache « array » est vidé à chaque requête)
+            password_reset:
+                policy: fixed_window
+                limit: 3
+                interval: '15 minutes'
+                storage_service: app.test_rate_limiter_storage
         # Pas d'appel réseau en test : la vérification des mots de passe compromis est coupée
         validation:
             not_compromised_password: false
