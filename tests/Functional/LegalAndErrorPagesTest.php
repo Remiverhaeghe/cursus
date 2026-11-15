@@ -30,7 +30,7 @@ final class LegalAndErrorPagesTest extends AppWebTestCase
     {
         $this->aClient->request('GET', $pPath);
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', $pTitle);
         self::assertSelectorTextContains('main', '(à compléter avant la mise en ligne)');
     }

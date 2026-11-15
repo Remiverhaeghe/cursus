@@ -55,7 +55,7 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function policy(?string $pNonce): string
+    private static function policy(?string $pNonce): string
     {
         $vScripts = null === $pNonce ? "'self'" : \sprintf("'self' 'nonce-%s'", $pNonce);
 

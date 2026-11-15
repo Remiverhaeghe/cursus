@@ -111,6 +111,8 @@ final class ProgressCalculatorTest extends TestCase
         self::assertSame('60,24', $vSingle->sparklinePoints(120, 32));
         self::assertSame('', $vEmpty->sparklinePoints(120, 32));
         self::assertSame('0,30 50,15 100,0', $vRising->sparklinePoints(100, 30));
+        $vFour = new CompetenceProgress($this->aData->aModel, [CompetenceLevel::Discovery, CompetenceLevel::Discovery, CompetenceLevel::Discovery, CompetenceLevel::Discovery], null);
+        self::assertSame('0,5.3 33.3,5.3 66.7,5.3 100,5.3', $vFour->sparklinePoints(100, 7));
         self::assertSame('0,22.5 10,22.5', (new CompetenceProgress($this->aData->aModel, [CompetenceLevel::Discovery, CompetenceLevel::Discovery], null))->sparklinePoints(10, 30));
     }
 
@@ -125,6 +127,7 @@ final class ProgressCalculatorTest extends TestCase
         self::assertSame(0.67, Average::of([0, 1, 1]));
         self::assertSame(100, Average::percentage(4.0));
         self::assertSame(13, Average::percentage(0.5));
+        self::assertSame(30, Average::percentage(1.21));
         self::assertSame(1.34, $vCohort->average());
         self::assertSame(Average::percentage($vCohort->average()), $vCohort->percentage());
         self::assertSame([$vGood, $vWeak], $vCohort->aApprentices);

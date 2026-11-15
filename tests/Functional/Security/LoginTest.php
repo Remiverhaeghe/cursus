@@ -19,7 +19,7 @@ final class LoginTest extends AppWebTestCase
     {
         $this->aClient->request('GET', '/connexion');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'Connexion');
         self::assertSelectorNotExists('.flash-error');
     }
@@ -39,7 +39,7 @@ final class LoginTest extends AppWebTestCase
         $this->aClient->followRedirect();
         self::assertResponseRedirects('/apprenti');
         $this->aClient->followRedirect();
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'Lucas');
     }
 
@@ -98,7 +98,7 @@ final class LoginTest extends AppWebTestCase
 
         $this->aClient->submitForm('Valider', ['_auth_code' => TOTP::createFromSecret(self::TOTP_SECRET)->now()]);
         $this->followRedirectsUntil('/ecole');
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'Claire');
     }
 
@@ -120,7 +120,7 @@ final class LoginTest extends AppWebTestCase
         for ($vStep = 0; $vStep < 5 && $this->aClient->getResponse()->isRedirection(); ++$vStep) {
             $this->aClient->followRedirect();
         }
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSame($pPath, parse_url((string) $this->aClient->getRequest()->getUri(), \PHP_URL_PATH));
     }
 

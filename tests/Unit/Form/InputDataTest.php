@@ -12,6 +12,7 @@ use App\Form\Data\CompanyData;
 use App\Form\Data\CompetenceBlockData;
 use App\Form\Data\CompetenceData;
 use App\Form\Data\FormationData;
+use App\Form\Data\NewPasswordData;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +23,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(CompanyData::class)]
 #[CoversClass(CohortData::class)]
 #[CoversClass(ApprenticeshipData::class)]
+#[CoversClass(NewPasswordData::class)]
 final class InputDataTest extends TestCase
 {
     public function testReferentialInputsAreTrimmed(): void
@@ -50,6 +52,16 @@ final class InputDataTest extends TestCase
         self::assertSame('C1.1', $vCompetence->getCode());
         self::assertSame('Maquetter', $vCompetence->getLabel());
         self::assertSame($vBlock, $vCompetence->getBlock());
+    }
+
+    public function testNewPasswordIsReadOnlyOnceValidated(): void
+    {
+        $vData = new NewPasswordData();
+        $vData->password = 'mot-de-passe-solide';
+        self::assertSame('mot-de-passe-solide', $vData->plainPassword());
+
+        $this->expectException(\LogicException::class);
+        (new NewPasswordData())->plainPassword();
     }
 
     public function testCompanyAndCohortInputsAreTrimmed(): void

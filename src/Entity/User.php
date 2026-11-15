@@ -146,7 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     public function anonymize(): void
     {
-        $this->aEmail = \sprintf('compte-supprime-%d@cursus.invalid', (int) $this->aId);
+        $this->aEmail = \sprintf('compte-supprime-%d@cursus.invalid', $this->aId);
         $this->aFirstName = 'Compte';
         $this->aLastName = 'supprimé';
         $this->aPassword = '';

@@ -47,9 +47,6 @@ class EvaluationRepository extends ServiceEntityRepository
      */
     public function findGroupedByApprenticeship(array $pApprenticeships): array
     {
-        if ([] === $pApprenticeships) {
-            return [];
-        }
         /** @var list<Evaluation> $vEvaluations */
         $vEvaluations = $this->createQueryBuilder('e')
             ->andWhere('e.aApprenticeship IN (:apprenticeships)')

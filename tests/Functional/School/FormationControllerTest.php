@@ -29,7 +29,7 @@ final class FormationControllerTest extends AppWebTestCase
 
         $this->aClient->request('GET', '/ecole/formations');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertAnySelectorTextContains('td a', self::SIO);
         self::assertAnySelectorTextNotContains('td a', self::WEB);
     }
@@ -47,6 +47,8 @@ final class FormationControllerTest extends AppWebTestCase
         $this->aClient->followRedirect();
         self::assertSelectorTextContains('.flash-success', 'Formation créée.');
         self::assertSelectorTextContains('h1', 'Licence pro réseaux');
+        $vList = $this->aClient->request('GET', '/ecole/formations');
+        self::assertSame(['BTS Services informatiques aux organisations', 'Licence pro réseaux'], $vList->filter('td a')->each(static fn ($pLink): string => $pLink->text()));
     }
 
     public function testIncompleteFormationIsRefused(): void
@@ -67,7 +69,7 @@ final class FormationControllerTest extends AppWebTestCase
 
         $this->aClient->request('GET', '/ecole/formations/'.$vFormation->getId());
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', self::SIO);
         self::assertAnySelectorTextContains('h3', 'B1 · Support et mise à disposition de services informatiques');
         self::assertAnySelectorTextContains('td', 'Gérer le patrimoine informatique');
@@ -117,6 +119,8 @@ final class FormationControllerTest extends AppWebTestCase
 
         $this->aClient->submitForm('Ajouter le bloc', ['competence_block[code]' => '', 'competence_block[title]' => 'Sans code']);
         self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('form[name="competence_block"]', 'This value should not be blank.');
+        self::assertInputValueSame('competence_block[title]', 'Sans code');
 
         $vForm = $vCrawler->filter('form[name="competence_'.$vBlock->getId().'"]')->form([
             'competence_'.$vBlock->getId().'[code]' => 'C1.9',
@@ -124,6 +128,8 @@ final class FormationControllerTest extends AppWebTestCase
         ]);
         $this->aClient->submit($vForm);
         self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('form[name="competence_'.$vBlock->getId().'"]', 'This value should not be blank.');
+        self::assertInputValueSame('competence_'.$vBlock->getId().'[code]', 'C1.9');
         self::assertCount(3, $this->refreshedBlock($vBlock)->getCompetences());
     }
 

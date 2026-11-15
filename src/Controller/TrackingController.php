@@ -4,15 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Apprenticeship;
 use App\Entity\User;
+use App\Evaluation\EvaluationRecorder;
 use App\Form\Data\EvaluationData;
 use App\Form\EvaluationType;
 use App\Progress\ProgressCalculator;
 use App\Repository\EvaluationRepository;
 use App\Security\Voter\ApprenticeshipVoter;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Clock\ClockInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,9 +28,7 @@ final class TrackingController extends AbstractController
         Request $pRequest,
         EvaluationRepository $pEvaluations,
         ProgressCalculator $pCalculator,
-        EntityManagerInterface $pEntityManager,
-        ClockInterface $pClock,
-        LoggerInterface $pLogger,
+        EvaluationRecorder $pRecorder,
     ): Response {
         $vForm = null;
         if ($this->isGranted(ApprenticeshipVoter::EVALUATE, $pApprenticeship)) {
@@ -40,14 +36,7 @@ final class TrackingController extends AbstractController
             $vForm = $this->createForm(EvaluationType::class, $vData, ['formation' => $pApprenticeship->getFormation()]);
             $vForm->handleRequest($pRequest);
             if ($vForm->isSubmitted() && $vForm->isValid()) {
-                $vEvaluation = $vData->toEvaluation($pApprenticeship, $pUser, $pClock->now());
-                $pEntityManager->persist($vEvaluation);
-                $pEntityManager->flush();
-                $pLogger->info('Évaluation enregistrée', [
-                    'evaluation_id' => $vEvaluation->getId(),
-                    'apprenticeship_id' => $pApprenticeship->getId(),
-                    'evaluator_id' => $pUser->getId(),
-                ]);
+                $pRecorder->record($vData, $pApprenticeship, $pUser);
                 $this->addFlash('success', 'Évaluation enregistrée.');
 
                 return $this->redirectToRoute('app_tracking_show', ['id' => $pApprenticeship->getId()]);

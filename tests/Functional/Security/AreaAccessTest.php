@@ -67,6 +67,6 @@ final class AreaAccessTest extends AppWebTestCase
     {
         $this->aClient->request('GET', '/health');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
     }
 }

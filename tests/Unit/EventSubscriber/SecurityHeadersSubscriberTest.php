@@ -36,7 +36,7 @@ final class SecurityHeadersSubscriberTest extends TestCase
 
         $vNonce = $vFirst->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE);
         self::assertIsString($vNonce);
-        self::assertSame(24, \strlen($vNonce));
+        self::assertSame(16, \strlen((string) base64_decode($vNonce, true)));
         self::assertNotSame($vNonce, $vSecond->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE));
         // Une page d'erreur rendue en sous-requête garde le nonce de la page principale
         self::assertSame($vSecond->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE), $vSub->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE));
@@ -71,7 +71,7 @@ final class SecurityHeadersSubscriberTest extends TestCase
 
     public function testExistingHeadersAndSubRequestsAreLeftAlone(): void
     {
-        $vResponse = new Response(headers: ['X-Frame-Options' => 'SAMEORIGIN']);
+        $vResponse = new Response(headers: ['X-Frame-Options' => 'SAMEORIGIN', 'Content-Security-Policy' => "default-src 'none'"]);
         $vSubResponse = new Response();
         $vSubscriber = new SecurityHeadersSubscriber();
 
@@ -79,6 +79,7 @@ final class SecurityHeadersSubscriberTest extends TestCase
         $vSubscriber->onKernelResponse($this->responseEvent(new Request(), $vSubResponse, HttpKernelInterface::SUB_REQUEST));
 
         self::assertSame('SAMEORIGIN', $vResponse->headers->get('X-Frame-Options'));
+        self::assertSame("default-src 'none'", $vResponse->headers->get('Content-Security-Policy'));
         self::assertFalse($vSubResponse->headers->has('Content-Security-Policy'));
     }
 

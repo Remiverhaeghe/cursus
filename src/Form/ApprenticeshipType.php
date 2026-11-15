@@ -41,7 +41,6 @@ final class ApprenticeshipType extends AbstractType
             ->add('company', EntityType::class, [
                 'label' => 'Entreprise',
                 'class' => Company::class,
-                'choice_label' => static fn (Company $pCompany): string => (string) $pCompany,
                 'query_builder' => static fn (CompanyRepository $pRepository) => $pRepository->createQueryBuilder('c')->orderBy('c.aName'),
                 'placeholder' => 'Choisir une entreprise',
             ])

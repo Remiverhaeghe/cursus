@@ -9,6 +9,10 @@
 - Limite du mot de passe oublié testée avec un stockage en mémoire propre à chaque test
 - `bin/prepare-test-databases` : base de test et une base par thread d'Infection
 - Commandes rapides documentées dans le README
+- Projet déplacé dans WSL2 : suite complète en 6 s au lieu de 4 min 20, Infection complet en 1 min 16 sans mutant hors délai
+- Mutation : tests des formulaires (objets de saisie, libellés, valeurs vides), contenu exact de l'export, limite par adresse et par IP, statuts exacts, erreurs réaffichées
+- Enregistrement des évaluations dans un service testé (`EvaluationRecorder`) ; activation TOTP sur une copie du compte, sans modifier le compte avant confirmation
+- Image Docker nommée `cursus-app-php-dev` (`IMAGES_PREFIX`), pour ne plus entrer en conflit avec nas-monitor
 
 ### Lot 7 : comptes et mise en ligne
 - Mot de passe oublié : lien à usage unique valable 30 minutes, seule l'empreinte du jeton en base, même réponse pour une adresse inconnue, 3 demandes par 15 minutes

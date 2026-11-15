@@ -19,6 +19,11 @@ final class UserTest extends TestCase
         self::assertSame('lea.martin@cursus.test', $vUser->getTotpAuthenticationUsername());
     }
 
+    public function testAccentedEmailIsLowercased(): void
+    {
+        self::assertSame('élodie@cursus.test', (new User('ÉLODIE@cursus.test', UserRole::Apprentice, 'Élodie', 'Roy'))->getEmail());
+    }
+
     public function testEmptyEmailIsRejected(): void
     {
         $this->expectException(\InvalidArgumentException::class);

@@ -29,7 +29,7 @@ final class PasswordResetTest extends AppWebTestCase
 
         $this->aClient->click($vCrawler->selectLink('Mot de passe oublié ?')->link());
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'Mot de passe oublié');
     }
 
@@ -49,7 +49,7 @@ final class PasswordResetTest extends AppWebTestCase
 
         $vLink = $this->linkFrom($vEmail);
         $this->aClient->request('GET', $vLink);
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         $this->aClient->submitForm('Enregistrer le mot de passe', [
             'new_password[password][first]' => self::NEW_PASSWORD,
             'new_password[password][second]' => self::NEW_PASSWORD,
@@ -111,6 +111,24 @@ final class PasswordResetTest extends AppWebTestCase
         self::assertSelectorTextContains('.flash-error', 'Trop de demandes');
     }
 
+    public function testLimitIsCountedPerAddressAndPerIp(): void
+    {
+        $this->aClient->disableReboot();
+        foreach (['INCONNU@cursus.test', 'Inconnu@Cursus.test', 'inconnu@cursus.test'] as $vEmail) {
+            $this->requestLink($vEmail, '192.0.2.1');
+            self::assertResponseRedirects('/connexion');
+        }
+
+        $this->requestLink('inconnu@cursus.test', '192.0.2.1');
+        self::assertResponseStatusCodeSame(429);
+
+        $this->requestLink('autre@cursus.test', '192.0.2.1');
+        self::assertResponseRedirects('/connexion');
+
+        $this->requestLink('inconnu@cursus.test', '192.0.2.2');
+        self::assertResponseRedirects('/connexion');
+    }
+
     /** @return iterable<string, array{string, string}> */
     public static function refusedPasswords(): iterable
     {
@@ -150,7 +168,7 @@ final class PasswordResetTest extends AppWebTestCase
     {
         $vOldHash = $this->loginAs(UserFixtures::APPRENTICE)->getPassword();
         $this->aClient->request('GET', '/apprenti');
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
 
         $vToken = str_repeat('c', 64);
         $this->entityManager()->persist(new PasswordResetToken($this->user(UserFixtures::APPRENTICE), $vToken, new \DateTimeImmutable()));
@@ -165,10 +183,10 @@ final class PasswordResetTest extends AppWebTestCase
         self::assertNotSame($vOldHash, $this->user(UserFixtures::APPRENTICE)->getPassword());
     }
 
-    private function requestLink(string $pEmail): void
+    private function requestLink(string $pEmail, string $pIp = '127.0.0.1'): void
     {
-        $this->aClient->request('GET', '/mot-de-passe-oublie');
-        $this->aClient->submitForm('Recevoir le lien', ['password_reset_request[email]' => $pEmail]);
+        $this->aClient->request('GET', '/mot-de-passe-oublie', server: ['REMOTE_ADDR' => $pIp]);
+        $this->aClient->submitForm('Recevoir le lien', ['password_reset_request[email]' => $pEmail], serverParameters: ['REMOTE_ADDR' => $pIp]);
     }
 
     private function linkFrom(?object $pEmail): string

@@ -50,6 +50,8 @@ final class CohortControllerTest extends AppWebTestCase
         $this->aClient->submitForm('Ouvrir la promotion', ['cohort[name]' => 'Promotion lointaine', 'cohort[startYear]' => '1990']);
 
         self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('form[name="cohort"]', 'This value should be between 2000 and 2100.');
+        self::assertInputValueSame('cohort[name]', 'Promotion lointaine');
         self::assertNull($this->entityManager()->getRepository(Cohort::class)->findOneBy(['aName' => 'Promotion lointaine']));
     }
 
@@ -60,7 +62,7 @@ final class CohortControllerTest extends AppWebTestCase
 
         $this->aClient->request('GET', '/ecole/promotions/'.$vCohort->getId());
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertAnySelectorTextContains('tbody td', 'Lucas Bernard');
         self::assertAnySelectorTextContains('tbody td', 'Marc Lefebvre');
         self::assertAnySelectorTextContains('tbody td', '01/09/2025 → 31/08/2027');

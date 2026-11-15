@@ -26,7 +26,7 @@ final class DashboardTest extends AppWebTestCase
 
         $vCrawler = $this->aClient->request('GET', '/ecole');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('.cohort h2', 'BTS Services informatiques aux organisations · Promotion 2025-2027');
         self::assertSelectorTextContains('.cohort p', '0,8 / 4');
         self::assertSame(['Lucas Bernard', 'Hugo Moreau', 'Emma Petit'], $this->names($vCrawler));
@@ -48,7 +48,7 @@ final class DashboardTest extends AppWebTestCase
 
         $vCrawler = $this->aClient->request('GET', '/tuteur');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSame(['Lucas Bernard', 'Hugo Moreau'], $this->names($vCrawler));
     }
 
@@ -67,7 +67,7 @@ final class DashboardTest extends AppWebTestCase
 
         $vCrawler = $this->aClient->request('GET', '/apprenti');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('.card p', 'Moyenne 1,5 / 4 · 2 compétence(s) validée(s) sur 6');
         self::assertAnySelectorTextContains('h3', 'B1 · Support et mise à disposition de services informatiques · 2,3 / 4');
         self::assertAnySelectorTextContains('.badge-warning', '1 compétence(s) jamais évaluée(s), comptée(s) à 0');
@@ -108,7 +108,7 @@ final class DashboardTest extends AppWebTestCase
 
         $this->aClient->click($vCrawler->selectLink('Lucas Bernard')->link());
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('.card p', 'Moyenne 1,5 / 4');
         self::assertSelectorExists('.remaining');
     }

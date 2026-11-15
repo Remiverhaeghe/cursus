@@ -185,7 +185,7 @@ final class TrackingControllerTest extends AppWebTestCase
 
         $this->aClient->click($vCrawler->selectLink('Lucas Bernard')->link());
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'Lucas Bernard');
     }
 

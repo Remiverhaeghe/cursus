@@ -11,4 +11,9 @@ final class NewPasswordData
     #[Assert\Length(min: 12, max: 4096)]
     #[Assert\NotCompromisedPassword(message: 'Ce mot de passe figure dans une fuite de données connue, choisis-en un autre.')]
     public ?string $password = null;
+
+    public function plainPassword(): string
+    {
+        return $this->password ?? throw new \LogicException('Mot de passe non validé.');
+    }
 }

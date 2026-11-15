@@ -39,7 +39,7 @@ final class AccountTest extends AppWebTestCase
 
         $this->aClient->request('GET', '/compte');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('.flash', $pReason);
         self::assertSelectorNotExists('form[action="/compte/supprimer"]');
 
@@ -54,7 +54,7 @@ final class AccountTest extends AppWebTestCase
 
         $this->aClient->request('GET', '/compte/export');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertResponseHeaderSame('Content-Disposition', 'attachment; filename=cursus-mes-donnees.json');
         $vData = json_decode((string) $this->aClient->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
         self::assertIsArray($vData);
@@ -66,6 +66,8 @@ final class AccountTest extends AppWebTestCase
         self::assertCount(6, $vData['evaluations']);
         self::assertSame(['C1.1 · Gérer le patrimoine informatique', 1, 'École'], [$vData['evaluations'][0]['competence'], $vData['evaluations'][0]['level'], $vData['evaluations'][0]['context']]);
         $vRaw = (string) $this->aClient->getResponse()->getContent();
+        self::assertStringContainsString("{\n    \"exported_at\"", $vRaw);
+        self::assertStringContainsString('Gérer le patrimoine informatique', $vRaw);
         self::assertStringNotContainsString('Hugo', $vRaw);
         self::assertStringNotContainsString('password', $vRaw);
         self::assertStringNotContainsString('totp_secret', $vRaw);
@@ -91,6 +93,11 @@ final class AccountTest extends AppWebTestCase
         $vId = $vUser->getId();
         $this->loginAs(self::FREE_ACCOUNT);
         $this->aClient->request('GET', '/compte');
+
+        $vToken = $this->aClient->getCrawler()->filter('input[name="_token"]')->attr('value');
+        $this->aClient->request('POST', '/compte/supprimer', ['_token' => (string) $vToken]);
+        self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('.flash-error', 'Mot de passe incorrect.');
 
         $this->aClient->submitForm('Supprimer définitivement mon compte', ['password' => 'mauvais']);
         self::assertResponseStatusCodeSame(422);

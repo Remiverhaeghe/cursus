@@ -21,7 +21,7 @@ final class CompanyControllerTest extends AppWebTestCase
 
         $vCrawler = $this->aClient->request('GET', '/ecole/entreprises');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertSame(['Atelier Lumen', 'Studio Brique'], $vCrawler->filter('tbody tr td:first-child')->each(static fn ($pCell): string => $pCell->text()));
     }
 
@@ -34,8 +34,9 @@ final class CompanyControllerTest extends AppWebTestCase
 
         self::assertResponseRedirects('/ecole/entreprises');
         self::assertSame('Lens', $this->find(Company::class, ['aName' => 'Agence Nord'])->getCity());
-        $this->aClient->followRedirect();
+        $vCrawler = $this->aClient->followRedirect();
         self::assertSelectorTextContains('.flash-success', 'Entreprise ajoutée.');
+        self::assertSame(['Agence Nord', 'Atelier Lumen', 'Studio Brique'], $vCrawler->filter('tbody tr td:first-child')->each(static fn ($pCell): string => $pCell->text()));
     }
 
     public function testIncompleteCompanyIsRefused(): void

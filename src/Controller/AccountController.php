@@ -39,7 +39,7 @@ final class AccountController extends AbstractController
     public function export(#[CurrentUser] User $pUser, AccountExporter $pExporter): JsonResponse
     {
         $rResponse = new JsonResponse($pExporter->export($pUser, $this->aClock->now()));
-        $rResponse->setEncodingOptions(\JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES);
+        $rResponse->setEncodingOptions(\JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE);
         $rResponse->headers->set('Content-Disposition', $rResponse->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'cursus-mes-donnees.json'));
 
         return $rResponse;
@@ -54,11 +54,11 @@ final class AccountController extends AbstractController
     ): Response {
         $vError = null;
         $vBlocker = $this->aDeletion->blocker($pUser, $this->aClock->now());
-        if (!$this->isCsrfTokenValid('account_delete', (string) $pRequest->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('account_delete', $pRequest->request->getString('_token'))) {
             $vError = 'Le formulaire a expiré, recommence.';
         } elseif (null !== $vBlocker) {
             $vError = $vBlocker;
-        } elseif (!$pPasswordHasher->isPasswordValid($pUser, (string) $pRequest->request->get('password'))) {
+        } elseif (!$pPasswordHasher->isPasswordValid($pUser, $pRequest->request->getString('password'))) {
             $vError = 'Mot de passe incorrect.';
         }
         if (null !== $vError) {

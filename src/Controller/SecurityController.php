@@ -59,13 +59,16 @@ final class SecurityController extends AbstractController
             $vSecret = $pTotpAuthenticator->generateSecret();
             $vSession->set(self::SESSION_TOTP_SECRET, $vSecret);
         }
-        $pUser->enableTotp($vSecret);
+        // Copie non suivie par Doctrine : elle porte le secret pour le code QR et la vérification du code
+        $vCandidate = clone $pUser;
+        $vCandidate->enableTotp($vSecret);
 
         $vError = null;
         if ($pRequest->isMethod('POST')) {
-            if (!$this->isCsrfTokenValid('totp_setup', (string) $pRequest->request->get('_token'))) {
+            if (!$this->isCsrfTokenValid('totp_setup', $pRequest->request->getString('_token'))) {
                 $vError = 'Le formulaire a expiré, recommence.';
-            } elseif ($pTotpAuthenticator->checkCode($pUser, (string) $pRequest->request->get('code'))) {
+            } elseif ($pTotpAuthenticator->checkCode($vCandidate, $pRequest->request->getString('code'))) {
+                $pUser->enableTotp($vSecret);
                 $pEntityManager->flush();
                 $vSession->remove(self::SESSION_TOTP_SECRET);
                 $this->addFlash('success', 'Double authentification activée.');
@@ -76,9 +79,7 @@ final class SecurityController extends AbstractController
             }
         }
 
-        $vQrCode = (new SvgWriter())->write(new QrCode($pTotpAuthenticator->getQRContent($pUser)));
-        // Rien n'est enregistré tant que le code n'est pas confirmé
-        $pUser->disableTotp();
+        $vQrCode = (new SvgWriter())->write(new QrCode($pTotpAuthenticator->getQRContent($vCandidate)));
 
         return $this->render('security/totp_setup.html.twig', [
             'qr_code' => $vQrCode->getDataUri(),

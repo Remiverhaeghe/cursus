@@ -15,9 +15,9 @@ final class PrefixedNamingStrategy implements NamingStrategy
         $this->aInner = new UnderscoreNamingStrategy();
     }
 
-    public static function withoutPrefix(string $pPropertyName): string
+    private static function withoutPrefix(string $pPropertyName): string
     {
-        $rName = (string) preg_replace('/^a(?=[A-Z])/', '', $pPropertyName);
+        $rName = preg_replace('/^a(?=[A-Z])/', '', $pPropertyName) ?? $pPropertyName;
 
         return $rName;
     }

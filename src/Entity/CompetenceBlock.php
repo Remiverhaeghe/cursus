@@ -80,8 +80,13 @@ class CompetenceBlock
         $this->aCompetences->add($pCompetence);
     }
 
-    public function __toString(): string
+    public function label(): string
     {
         return $this->aCode.' · '.$this->aTitle;
+    }
+
+    public function __toString(): string
+    {
+        return $this->label();
     }
 }

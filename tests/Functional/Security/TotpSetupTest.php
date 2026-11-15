@@ -27,7 +27,7 @@ final class TotpSetupTest extends AppWebTestCase
         $this->aClient->loginUser($this->user(UserFixtures::TUTOR));
 
         $vFirst = $this->aClient->request('GET', '/double-authentification');
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertStringStartsWith('data:image/svg+xml', (string) $vFirst->filter('img.qr')->attr('src'));
         $vSecret = $vFirst->filter('#totp-secret')->text();
 
@@ -46,6 +46,17 @@ final class TotpSetupTest extends AppWebTestCase
         self::assertResponseStatusCodeSame(422);
         self::assertSelectorTextContains('.flash-error', 'Code incorrect');
         self::assertFalse($this->refreshed($this->user(UserFixtures::TUTOR))->isTotpAuthenticationEnabled());
+    }
+
+    public function testMissingCodeIsRefused(): void
+    {
+        $this->aClient->loginUser($this->user(UserFixtures::TUTOR));
+        $vCrawler = $this->aClient->request('GET', '/double-authentification');
+
+        $this->aClient->request('POST', '/double-authentification', ['_token' => (string) $vCrawler->filter('input[name="_token"]')->attr('value')]);
+
+        self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('.flash-error', 'Code incorrect');
     }
 
     public function testExpiredFormIsRefused(): void
@@ -103,9 +114,9 @@ final class TotpSetupTest extends AppWebTestCase
         $this->aClient->loginUser($this->user(UserFixtures::APPRENTICE));
 
         $this->aClient->request('GET', '/apprenti');
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
 
         $this->aClient->request('GET', '/double-authentification');
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
     }
 }

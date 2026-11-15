@@ -29,8 +29,7 @@ final class EvaluationType extends AbstractType
                 'label' => 'Compétence',
                 'class' => Competence::class,
                 'choices' => $vFormation->getCompetences(),
-                'choice_label' => static fn (Competence $pCompetence): string => (string) $pCompetence,
-                'group_by' => static fn (Competence $pCompetence): string => (string) $pCompetence->getBlock(),
+                'group_by' => static fn (Competence $pCompetence): string => $pCompetence->getBlock()->label(),
                 'placeholder' => 'Choisir une compétence',
             ])
             ->add('level', EnumType::class, [

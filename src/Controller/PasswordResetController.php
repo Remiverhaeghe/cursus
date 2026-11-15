@@ -34,7 +34,7 @@ final class PasswordResetController extends AbstractController
         $vForm->handleRequest($pRequest);
         if ($vForm->isSubmitted() && $vForm->isValid()) {
             // Même limite pour une adresse connue ou inconnue : le nombre de refus ne trahit rien
-            $vLimit = $pLimiter->create(mb_strtolower($vData->email).'|'.$pRequest->getClientIp())->consume();
+            $vLimit = $pLimiter->create(implode('|', [strtolower($vData->email), $pRequest->getClientIp()]))->consume();
             if (!$vLimit->isAccepted()) {
                 return $this->render('security/password_forgotten.html.twig', [
                     'form' => $vForm,
@@ -66,7 +66,7 @@ final class PasswordResetController extends AbstractController
         $vForm = $this->createForm(NewPasswordType::class, $vData);
         $vForm->handleRequest($pRequest);
         if ($vForm->isSubmitted() && $vForm->isValid()) {
-            $this->aPasswordReset->reset($token, (string) $vData->password);
+            $this->aPasswordReset->reset($token, $vData->plainPassword());
             $this->addFlash('success', 'Mot de passe changé. Tu peux te connecter.');
 
             return $this->redirectToRoute('app_login');
