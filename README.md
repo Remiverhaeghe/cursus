@@ -103,6 +103,8 @@ Les tests tournent hors debug (quatre fois plus vite sous Docker pour Windows) ;
 | Mutation sur les lignes modifiées | `docker compose exec php vendor/bin/infection --git-diff-lines --git-diff-base=origin/main --threads=1` |
 | Mutation en parallèle | `docker compose exec php bin/prepare-test-databases 4`, puis `... infection --threads=4` |
 
+Infection exige 98 % de mutants tués sur tout le code (indice actuel : 99 %, les mutants restants sont équivalents) et 85 % sur les lignes modifiées d'une pull request.
+
 Infection lance une base par thread (`app_test1` à `app_test4`) grâce à `TEST_TOKEN` : prépare-les avant d'augmenter `--threads`.
 
 ## Avancement

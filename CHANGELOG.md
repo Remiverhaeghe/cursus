@@ -13,6 +13,7 @@
 - Mutation : tests des formulaires (objets de saisie, libellés, valeurs vides), contenu exact de l'export, limite par adresse et par IP, statuts exacts, erreurs réaffichées
 - Enregistrement des évaluations dans un service testé (`EvaluationRecorder`) ; activation TOTP sur une copie du compte, sans modifier le compte avant confirmation
 - Image Docker nommée `cursus-app-php-dev` (`IMAGES_PREFIX`), pour ne plus entrer en conflit avec nas-monitor
+- Seuil de mutation relevé de 95 % à 98 % (indice actuel : 99 %, les mutants restants sont équivalents)
 
 ### Lot 7 : comptes et mise en ligne
 - Mot de passe oublié : lien à usage unique valable 30 minutes, seule l'empreinte du jeton en base, même réponse pour une adresse inconnue, 3 demandes par 15 minutes
