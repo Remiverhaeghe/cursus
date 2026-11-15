@@ -77,8 +77,10 @@ final class TotpSetupTest extends AppWebTestCase
         $this->aClient->followRedirect();
         self::assertSelectorTextContains('.flash-success', 'Double authentification activée.');
 
-        // Un nouveau passage repart d'un nouveau secret : l'ancien a quitté la session
-        $vUser->disableTotp();
+        // Un nouveau passage repart d'un nouveau secret : l'ancien a quitté la session.
+        // Le noyau a redémarré pendant les redirections : on recharge le compte dans le nouveau gestionnaire d'entités.
+        $vReloaded = $this->refreshed($vUser);
+        $vReloaded->disableTotp();
         $this->entityManager()->flush();
         $vNext = $this->aClient->request('GET', '/double-authentification');
         self::assertNotSame($vSecret, $vNext->filter('#totp-secret')->text());

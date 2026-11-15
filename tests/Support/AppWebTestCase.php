@@ -5,7 +5,6 @@ namespace App\Tests\Support;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -24,29 +23,19 @@ abstract class AppWebTestCase extends WebTestCase
         $this->aClient = static::createClient();
         $vEntityManager = $this->entityManager();
         $vLoader = static::getContainer()->get('doctrine.fixtures.loader');
-        if (!$vLoader instanceof Loader) {
-            throw new \LogicException('Chargeur de fixtures introuvable.');
-        }
         (new ORMExecutor($vEntityManager, new ORMPurger($vEntityManager)))->execute($vLoader->getFixtures());
     }
 
     protected function entityManager(): EntityManagerInterface
     {
         $rEntityManager = static::getContainer()->get(EntityManagerInterface::class);
-        if (!$rEntityManager instanceof EntityManagerInterface) {
-            throw new \LogicException('Gestionnaire d\'entités introuvable.');
-        }
 
         return $rEntityManager;
     }
 
     protected function user(string $pEmail): User
     {
-        $vRepository = static::getContainer()->get(UserRepository::class);
-        if (!$vRepository instanceof UserRepository) {
-            throw new \LogicException('Dépôt des comptes introuvable.');
-        }
-        $rUser = $vRepository->findOneByEmail($pEmail);
+        $rUser = static::getContainer()->get(UserRepository::class)->findOneByEmail($pEmail);
         if (null === $rUser) {
             throw new \LogicException(\sprintf('Compte de test absent : %s', $pEmail));
         }

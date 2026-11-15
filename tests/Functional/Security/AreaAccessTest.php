@@ -3,8 +3,8 @@
 namespace App\Tests\Functional\Security;
 
 use App\Controller\DashboardController;
-use App\EventSubscriber\SecurityHeadersSubscriber;
 use App\DataFixtures\UserFixtures;
+use App\EventSubscriber\SecurityHeadersSubscriber;
 use App\Tests\Support\AppWebTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

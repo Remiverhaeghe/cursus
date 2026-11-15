@@ -13,7 +13,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/** Formulaire d'évaluation : seules les compétences de la formation de l'apprenti sont proposées. */
+/**
+ * Formulaire d'évaluation : seules les compétences de la formation de l'apprenti sont proposées.
+ *
+ * @extends AbstractType<EvaluationData>
+ */
 final class EvaluationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

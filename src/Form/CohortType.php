@@ -9,7 +9,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/** Formulaire d'ouverture d'une promotion. */
+/**
+ * Formulaire d'ouverture d'une promotion.
+ *
+ * @extends AbstractType<CohortData>
+ */
 final class CohortType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

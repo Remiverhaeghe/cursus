@@ -8,7 +8,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/** Formulaire d'ajout d'une compétence dans un bloc. */
+/**
+ * Formulaire d'ajout d'une compétence dans un bloc.
+ *
+ * @extends AbstractType<CompetenceData>
+ */
 final class CompetenceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

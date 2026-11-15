@@ -2,10 +2,10 @@
 
 namespace App\Tests\Unit\Form;
 
-use App\Entity\User;
-use App\Enum\UserRole;
 use App\Entity\Cohort;
 use App\Entity\Company;
+use App\Entity\User;
+use App\Enum\UserRole;
 use App\Form\Data\ApprenticeshipData;
 use App\Form\Data\CohortData;
 use App\Form\Data\CompanyData;

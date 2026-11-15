@@ -115,14 +115,17 @@ final class FormationController extends AbstractController
         return $this->redirectToRoute('app_school_cohort_show', ['id' => $vCohort->getId()]);
     }
 
-    /** @param array<int, FormInterface> $pCompetenceForms formulaires déjà soumis, par identifiant de bloc */
+    /**
+     * @param FormInterface<mixed>|null        $pBlockForm
+     * @param array<int, FormInterface<mixed>> $pCompetenceForms formulaires déjà soumis, par identifiant de bloc
+     * @param FormInterface<mixed>|null        $pCohortForm
+     */
     private function renderShow(
         Formation $pFormation,
         ?FormInterface $pBlockForm = null,
         array $pCompetenceForms = [],
         ?FormInterface $pCohortForm = null,
-    ): Response
-    {
+    ): Response {
         $vCompetenceViews = [];
         foreach ($pFormation->getBlocks() as $vBlock) {
             $vBlockId = (int) $vBlock->getId();
@@ -138,6 +141,7 @@ final class FormationController extends AbstractController
         ], new Response(status: $vSubmitted ? 422 : 200));
     }
 
+    /** @return FormInterface<mixed> */
     private function competenceForm(CompetenceBlock $pBlock, CompetenceData $pData): FormInterface
     {
         $rForm = $this->aFormFactory->createNamed('competence_'.$pBlock->getId(), CompetenceType::class, $pData, [

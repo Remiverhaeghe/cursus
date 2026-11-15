@@ -14,7 +14,11 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/** Formulaire de rattachement d'un apprenti : seuls les comptes du bon profil sont proposés. */
+/**
+ * Formulaire de rattachement d'un apprenti : seuls les comptes du bon profil sont proposés.
+ *
+ * @extends AbstractType<ApprenticeshipData>
+ */
 final class ApprenticeshipType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

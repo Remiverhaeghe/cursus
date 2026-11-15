@@ -8,7 +8,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/** Formulaire d'ajout d'une entreprise d'accueil. */
+/**
+ * Formulaire d'ajout d'une entreprise d'accueil.
+ *
+ * @extends AbstractType<CompanyData>
+ */
 final class CompanyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

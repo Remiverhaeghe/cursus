@@ -193,11 +193,7 @@ final class TrackingControllerTest extends AppWebTestCase
     private function evaluations(Apprenticeship $pContract): array
     {
         $this->entityManager()->clear();
-        $vRepository = static::getContainer()->get(EvaluationRepository::class);
-        if (!$vRepository instanceof EvaluationRepository) {
-            throw new \LogicException('Dépôt des évaluations introuvable.');
-        }
 
-        return $vRepository->findForApprenticeship($this->find(Apprenticeship::class, ['aId' => $pContract->getId()]));
+        return static::getContainer()->get(EvaluationRepository::class)->findForApprenticeship($this->find(Apprenticeship::class, ['aId' => $pContract->getId()]));
     }
 }
