@@ -20,10 +20,16 @@ abstract class AppWebTestCase extends WebTestCase
 
     protected function setUp(): void
     {
-        $this->aClient = static::createClient();
+        $this->aClient = static::createClient(static::clientOptions());
         $vEntityManager = $this->entityManager();
         $vLoader = static::getContainer()->get('doctrine.fixtures.loader');
         (new ORMExecutor($vEntityManager, new ORMPurger($vEntityManager)))->execute($vLoader->getFixtures());
+    }
+
+    /** @return array<string, mixed> options du noyau, par exemple `['debug' => false]` pour voir les vraies pages d'erreur */
+    protected static function clientOptions(): array
+    {
+        return [];
     }
 
     protected function entityManager(): EntityManagerInterface

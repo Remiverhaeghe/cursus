@@ -140,6 +140,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $rConfiguration;
     }
 
+    /**
+     * Suppression du compte : l'identité est effacée, la ligne reste pour que les évaluations
+     * déjà enregistrées gardent leur évaluateur, devenu anonyme. Plus aucune connexion possible.
+     */
+    public function anonymize(): void
+    {
+        $this->aEmail = \sprintf('compte-supprime-%d@cursus.invalid', (int) $this->aId);
+        $this->aFirstName = 'Compte';
+        $this->aLastName = 'supprimé';
+        $this->aPassword = '';
+        $this->aTotpSecret = null;
+    }
+
     public function __toString(): string
     {
         return $this->getFullName();

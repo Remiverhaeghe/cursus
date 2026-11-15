@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Cursus : suivi des compétences des apprentis entre l'école, le tuteur et l'apprenti. Démonstration avec des données fictives.">
+        <meta name="robots" content="noindex">
         <title>{% block title %}Cursus{% endblock %} · Cursus</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%232f5d8a%22/><text x=%2216%22 y=%2222%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22white%22>C</text></svg>">
         {% block javascripts %}
@@ -17,7 +19,7 @@
                     {% block menu %}{% include 'partials/_menu.html.twig' %}{% endblock %}
                 </nav>
                 <div class="account">
-                    <span>{{ app.user.fullName }} · {{ app.user.role.label }}</span>
+                    <a href="{{ path('app_account') }}">{{ app.user.fullName }} · {{ app.user.role.label }}</a>
                     <a href="{{ logout_path() }}">Déconnexion</a>
                 </div>
             {% endif %}
@@ -30,6 +32,11 @@
             {% endfor %}
             {% block body %}{% endblock %}
         </main>
-        <footer class="footer">Cursus · démonstration avec des données fictives</footer>
+        <footer class="footer">
+            Cursus · démonstration avec des données fictives ·
+            <a href="{{ path('app_legal_notice') }}">Mentions légales</a> ·
+            <a href="{{ path('app_legal_privacy') }}">Confidentialité</a> ·
+            <a href="{{ path('app_legal_terms') }}">Conditions d'utilisation</a>
+        </footer>
     </body>
 </html>

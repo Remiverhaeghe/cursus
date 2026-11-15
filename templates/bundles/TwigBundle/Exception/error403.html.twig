@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block body %}
+    <section class="card narrow">
+        <h1>Accès refusé</h1>
+        <p>Cette page n'est pas accessible avec ton profil.</p>
+        <p><a class="button" href="{{ path('app_home') }}">Retour à l'accueil</a></p>
+    </section>
+{% endblock %}

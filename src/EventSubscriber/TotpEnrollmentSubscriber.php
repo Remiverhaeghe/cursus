@@ -14,8 +14,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /** Oblige l'école et les tuteurs à activer la double authentification avant d'aller plus loin. */
 final class TotpEnrollmentSubscriber implements EventSubscriberInterface
 {
-    /** Pages accessibles avant l'activation : la page d'activation elle-même et la déconnexion. */
-    private const array ALLOWED_ROUTES = ['app_totp_setup', 'app_logout'];
+    /** Pages accessibles avant l'activation : la page d'activation, la déconnexion et les pages légales. */
+    private const array ALLOWED_ROUTES = ['app_totp_setup', 'app_logout', 'app_legal_notice', 'app_legal_privacy', 'app_legal_terms'];
 
     public function __construct(
         private readonly Security $aSecurity,

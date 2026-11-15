@@ -23,6 +23,9 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
         'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()',
     ];
 
+    /** Nonce de la requête principale en cours, repris par ses sous-requêtes (pages d'erreur, fragments). */
+    private string $aNonce = '';
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -34,8 +37,9 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $pEvent): void
     {
         if ($pEvent->isMainRequest()) {
-            $pEvent->getRequest()->attributes->set(self::NONCE_ATTRIBUTE, base64_encode(random_bytes(16)));
+            $this->aNonce = base64_encode(random_bytes(16));
         }
+        $pEvent->getRequest()->attributes->set(self::NONCE_ATTRIBUTE, $this->aNonce);
     }
 
     public function onKernelResponse(ResponseEvent $pEvent): void

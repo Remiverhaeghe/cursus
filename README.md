@@ -40,6 +40,14 @@ Les fixtures créent des comptes fictifs, tous avec le mot de passe `demo-cursus
 
 L'école et les tuteurs activent la double authentification à leur première connexion, en scannant un code QR avec une application TOTP (FreeOTP, Aegis…).
 
+## Configuration
+
+| Variable | Rôle |
+|---|---|
+| `TOTP_REQUIRED` | `1` : double authentification obligatoire pour l'école et les tuteurs ; `0` pour une démo à comptes partagés |
+| `MAILER_DSN`, `MAILER_FROM` | Envoi des liens de mot de passe oublié (Mailpit en développement) |
+| `LEGAL_PUBLISHER`, `LEGAL_HOST`, `LEGAL_CONTACT` | Éditeur, hébergeur et contact affichés dans les pages légales, à remplir dans `.env.local` avant une mise en ligne |
+
 ## Démo publique
 
 Pour une démo ouverte à tous, mets `TOTP_REQUIRED=0` dans `.env.local` : sinon le premier visiteur activerait la double authentification sur un compte partagé. Les données se remettent à zéro avec la commande de fixtures ci-dessus, à planifier par exemple toutes les nuits :
@@ -65,7 +73,7 @@ Les attributs suivent la convention du projet (`a` pour un attribut, `p` pour un
 
 ## Sécurité
 
-Mots de passe en Argon2id, jeton CSRF sur tous les formulaires et sur la déconnexion, 5 essais de connexion par 15 minutes, même message pour un compte inconnu et un mauvais mot de passe. Double authentification TOTP pour l'école et les tuteurs. Chaque accès à une donnée passe par un voter, testé pour chaque couple profil et donnée. Politique CSP stricte avec un nonce par requête, pas d'affichage dans un cadre. Les connexions et les évaluations sont journalisées avec des identifiants seulement. Gitleaks tourne en CI.
+Mots de passe en Argon2id, jeton CSRF sur tous les formulaires et sur la déconnexion, 5 essais de connexion par 15 minutes, même message pour un compte inconnu et un mauvais mot de passe. Mot de passe oublié par lien à usage unique de 30 minutes, session fermée après 30 minutes d'inactivité, export et suppression de son compte depuis « Mon compte ». Double authentification TOTP pour l'école et les tuteurs. Chaque accès à une donnée passe par un voter, testé pour chaque couple profil et donnée. Politique CSP stricte avec un nonce par requête, pas d'affichage dans un cadre. Les connexions et les évaluations sont journalisées avec des identifiants seulement. Gitleaks tourne en CI.
 
 ## Contrôles qualité
 
@@ -80,7 +88,16 @@ Les tests fonctionnels rechargent les fixtures avant chaque test, sur la base de
 
 ## Avancement
 
-Les lots 0 à 6 du cahier des charges sont livrés, voir le [CHANGELOG](CHANGELOG.md). Hors première version : dépôt de fichiers, inscription en ligne, messagerie, export PDF du livret.
+Les lots 0 à 7 sont livrés, voir le [CHANGELOG](CHANGELOG.md) et la [feuille de route](ROADMAP.md). Hors première version : dépôt de fichiers, inscription en ligne, messagerie, export PDF du livret.
+
+## Documentation
+
+| Document | Contenu |
+|---|---|
+| [docs/decisions.md](docs/decisions.md) | Choix d'architecture et leurs raisons |
+| [docs/securite.md](docs/securite.md) | Revue de menaces et liste des protections |
+| [docs/mise-en-ligne.md](docs/mise-en-ligne.md) | Ce qui reste à faire avant une mise en ligne |
+| [SECURITY.md](SECURITY.md) | Signaler une faille |
 
 ## Licence
 

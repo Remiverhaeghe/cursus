@@ -38,6 +38,31 @@ class ApprenticeshipRepository extends ServiceEntityRepository
         return $this->ordered($this->baseQuery()->andWhere('f.aManager = :user')->setParameter('user', $pManager));
     }
 
+    /**
+     * Contrats où le compte est apprenti ou tuteur, pour l'export de ses données.
+     *
+     * @return list<Apprenticeship>
+     */
+    public function findInvolving(User $pUser): array
+    {
+        return $this->ordered($this->baseQuery()->andWhere('a.aApprentice = :user OR a.aTutor = :user')->setParameter('user', $pUser));
+    }
+
+    /** Un contrat encore en cours (fin aujourd'hui ou plus tard) empêche de supprimer le compte de son apprenti ou de son tuteur. */
+    public function hasCurrentContract(User $pUser, \DateTimeImmutable $pToday): bool
+    {
+        $vCount = (int) $this->createQueryBuilder('a')
+            ->select('COUNT(a.aId)')
+            ->andWhere('a.aApprentice = :user OR a.aTutor = :user')
+            ->andWhere('a.aEndDate >= :today')
+            ->setParameter('user', $pUser)
+            ->setParameter('today', $pToday->setTime(0, 0), 'date_immutable')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $vCount > 0;
+    }
+
     private function baseQuery(): QueryBuilder
     {
         $rQuery = $this->createQueryBuilder('a')

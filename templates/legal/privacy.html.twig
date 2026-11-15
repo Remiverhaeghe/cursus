@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité{% endblock %}
+
+{% block body %}
+    <section class="card">
+        <h1>Politique de confidentialité</h1>
+        <p>Cursus est une démonstration : tous les comptes et toutes les données sont fictifs, et la base est remise à zéro régulièrement. N'y saisis aucune donnée réelle.</p>
+        <h2>Données enregistrées</h2>
+        <ul>
+            <li>Compte : adresse e-mail, prénom, nom, profil (école, tuteur, apprenti), empreinte du mot de passe, secret de double authentification s'il est activé.</li>
+            <li>Suivi : formations, promotions, entreprises, contrats et évaluations saisis dans l'application.</li>
+            <li>Journal technique : connexions réussies ou échouées (identifiant du compte ou adresse IP), évaluations enregistrées (identifiants seulement).</li>
+        </ul>
+        <h2>Pourquoi</h2>
+        <p>Uniquement pour faire fonctionner le suivi des compétences et protéger les comptes. Aucune donnée n'est vendue, partagée ni utilisée à des fins publicitaires.</p>
+        <h2>Cookies</h2>
+        <p>Un cookie de session, nécessaire à la connexion, et un jeton anti-falsification des formulaires. Aucun cookie de mesure d'audience ni de publicité : il n'y a donc pas de bandeau de consentement.</p>
+        <h2>Durée de conservation</h2>
+        <p>Jusqu'à la prochaine remise à zéro de la démonstration, ou jusqu'à la suppression de ton compte.</p>
+        <h2>Tes droits</h2>
+        <p>Depuis <a href="{{ path('app_account') }}">Mon compte</a>, tu peux télécharger tes données et supprimer ton compte. Pour toute autre demande (accès, rectification, opposition) : {% include 'legal/_value.html.twig' with {value: legal.contact} %}.</p>
+    </section>
+{% endblock %}

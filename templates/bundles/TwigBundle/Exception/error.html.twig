@@ -1,0 +1,18 @@
+{# Page générique (500…) : volontairement sans menu ni appel à la base, pour s'afficher même quand l'application va mal #}
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex">
+        <title>Erreur · Cursus</title>
+    </head>
+    <body>
+        <main>
+            <h1>Une erreur est survenue</h1>
+            <p>Le problème a été enregistré. Réessaie dans quelques instants.</p>
+            <p>Code : {{ status_code }}</p>
+            <p><a href="/">Retour à l'accueil</a></p>
+        </main>
+    </body>
+</html>

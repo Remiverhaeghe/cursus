@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Apprenticeship;
 use App\Entity\Evaluation;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -64,5 +65,25 @@ class EvaluationRepository extends ServiceEntityRepository
         }
 
         return $rGroups;
+    }
+
+    /**
+     * Évaluations reçues (apprenti) ou données (école, tuteur) par un compte, pour l'export de ses données.
+     *
+     * @return list<Evaluation>
+     */
+    public function findInvolving(User $pUser): array
+    {
+        /** @var list<Evaluation> $rEvaluations */
+        $rEvaluations = $this->createQueryBuilder('e')
+            ->join('e.aApprenticeship', 'a')
+            ->andWhere('a.aApprentice = :user OR e.aEvaluator = :user')
+            ->setParameter('user', $pUser)
+            ->orderBy('e.aEvaluatedAt')
+            ->addOrderBy('e.aId')
+            ->getQuery()
+            ->getResult();
+
+        return $rEvaluations;
     }
 }

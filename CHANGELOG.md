@@ -2,6 +2,17 @@
 
 ## Non publié
 
+### Lot 7 : comptes et mise en ligne
+- Mot de passe oublié : lien à usage unique valable 30 minutes, seule l'empreinte du jeton en base, même réponse pour une adresse inconnue, 3 demandes par 15 minutes
+- Nouveau mot de passe de 12 caractères au moins, refusé s'il figure dans une fuite connue ; les autres sessions du compte sont fermées
+- Session fermée après 30 minutes d'inactivité, avec un message à la reconnexion
+- « Mon compte » : export JSON de ses données, suppression du compte par anonymisation (refusée tant qu'une formation ou un contrat en cours en dépend)
+- Pages légales (mentions, confidentialité, conditions), remplies depuis la configuration sans rien inventer
+- Pages d'erreur 403, 404 et 500 personnalisées ; le nonce CSP suit les sous-requêtes des pages d'erreur
+- `robots.txt` et `noindex` pour la démo, `security.txt`, `SECURITY.md`, description des pages
+- Accessibilité : focus visible, contrastes de l'orange et du vert corrigés, tableaux qui défilent sur mobile, styles d'impression
+- Documentation : `docs/decisions.md`, `docs/securite.md` (revue de menaces), `docs/mise-en-ligne.md`, `ROADMAP.md`
+
 ### Lot 6 : démo publique et documentation
 - En-têtes de sécurité sur chaque réponse : CSP stricte avec un nonce par requête pour les scripts de l'importmap, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
 - Mode démo documenté : `TOTP_REQUIRED=0` et remise à zéro nocturne des fixtures

@@ -41,6 +41,8 @@ security:
         - { path: ^/health$, roles: PUBLIC_ACCESS }
         - { path: ^/connexion$, roles: PUBLIC_ACCESS }
         - { path: ^/deconnexion$, roles: PUBLIC_ACCESS }
+        - { path: ^/mot-de-passe-oublie, roles: PUBLIC_ACCESS }
+        - { path: ^/(mentions-legales|confidentialite|conditions-utilisation)$, roles: PUBLIC_ACCESS }
         - { path: ^/2fa, roles: IS_AUTHENTICATED_2FA_IN_PROGRESS }
         - { path: ^/ecole, roles: ROLE_SCHOOL }
         - { path: ^/tuteur, roles: ROLE_TUTOR }

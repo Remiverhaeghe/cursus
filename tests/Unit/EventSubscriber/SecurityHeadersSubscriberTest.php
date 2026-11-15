@@ -38,7 +38,8 @@ final class SecurityHeadersSubscriberTest extends TestCase
         self::assertIsString($vNonce);
         self::assertSame(24, \strlen($vNonce));
         self::assertNotSame($vNonce, $vSecond->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE));
-        self::assertFalse($vSub->attributes->has(SecurityHeadersSubscriber::NONCE_ATTRIBUTE));
+        // Une page d'erreur rendue en sous-requête garde le nonce de la page principale
+        self::assertSame($vSecond->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE), $vSub->attributes->get(SecurityHeadersSubscriber::NONCE_ATTRIBUTE));
     }
 
     public function testResponseCarriesThePolicyWithTheRequestNonce(): void

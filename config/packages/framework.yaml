@@ -5,6 +5,13 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    rate_limiter:
+        # Mot de passe oublié : 3 demandes par adresse et par IP toutes les 15 minutes
+        password_reset:
+            policy: fixed_window
+            limit: 3
+            interval: '15 minutes'
+
     #esi: true
     #fragments: true
 
@@ -13,3 +20,6 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+        # Pas d'appel réseau en test : la vérification des mots de passe compromis est coupée
+        validation:
+            not_compromised_password: false

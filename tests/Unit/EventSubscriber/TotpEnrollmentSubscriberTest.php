@@ -48,6 +48,9 @@ final class TotpEnrollmentSubscriberTest extends TestCase
         yield 'tuteur déjà équipé' => [$vTutorWithTotp, 'app_tutor_home', true, HttpKernelInterface::MAIN_REQUEST];
         yield 'page d\'activation' => [$vSchool, 'app_totp_setup', true, HttpKernelInterface::MAIN_REQUEST];
         yield 'déconnexion' => [$vSchool, 'app_logout', true, HttpKernelInterface::MAIN_REQUEST];
+        yield 'mentions légales' => [$vSchool, 'app_legal_notice', true, HttpKernelInterface::MAIN_REQUEST];
+        yield 'confidentialité' => [$vSchool, 'app_legal_privacy', true, HttpKernelInterface::MAIN_REQUEST];
+        yield 'conditions' => [$vSchool, 'app_legal_terms', true, HttpKernelInterface::MAIN_REQUEST];
         yield 'sous-requête' => [$vSchool, 'app_school_home', true, HttpKernelInterface::SUB_REQUEST];
         yield 'obligation désactivée' => [$vSchool, 'app_school_home', false, HttpKernelInterface::MAIN_REQUEST];
     }
