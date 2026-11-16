@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprises{% endblock %}
+
+{% block body %}
+    <h1>Entreprises d'accueil</h1>
+    <section class="card">
+        {% if companies is empty %}
+            <p class="muted">Aucune entreprise pour l'instant.</p>
+        {% else %}
+            <table>
+                <thead><tr><th>Entreprise</th><th>Ville</th></tr></thead>
+                <tbody>
+                    {% for company in companies %}
+                        <tr><td>{{ company.name }}</td><td>{{ company.city }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+    <section class="card">
+        <h2>Nouvelle entreprise</h2>
+        {{ form_start(form, {attr: {class: 'form'}}) }}
+            {{ form_widget(form) }}
+            <button type="submit">Ajouter l'entreprise</button>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

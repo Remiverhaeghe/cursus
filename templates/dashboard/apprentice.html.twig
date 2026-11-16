@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma progression{% endblock %}
+
+{% block body %}
+    <h1>Bonjour {{ user.firstName }}</h1>
+    {% for progress in progresses %}
+        <p class="muted">
+            {{ progress.aApprenticeship.formation.name }} · {{ progress.aApprenticeship.cohort.name }} ·
+            tuteur {{ progress.aApprenticeship.tutor.fullName }} ·
+            <a href="{{ path('app_tracking_show', {id: progress.aApprenticeship.id}) }}">historique des évaluations</a>
+        </p>
+        {% include 'partials/_progress.html.twig' with {progress: progress, show_remaining: true} %}
+    {% else %}
+        <p class="muted">Tu n'es rattaché à aucune promotion pour l'instant.</p>
+    {% endfor %}
+{% endblock %}

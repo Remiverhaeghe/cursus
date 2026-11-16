@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions d'utilisation{% endblock %}
+
+{% block body %}
+    <section class="card">
+        <h1>Conditions d'utilisation</h1>
+        <h2>Objet</h2>
+        <p>Cursus est une démonstration d'un outil de suivi des compétences d'apprentis, proposée gratuitement par {% include 'legal/_value.html.twig' with {value: legal.publisher} %}.</p>
+        <h2>Données fictives uniquement</h2>
+        <p>N'enregistre aucune donnée réelle sur une personne. Les comptes de démonstration sont partagés et la base est remise à zéro régulièrement.</p>
+        <h2>Disponibilité</h2>
+        <p>Le service est fourni tel quel, sans garantie de disponibilité ni de conservation des données.</p>
+        <h2>Usage interdit</h2>
+        <p>Tenter d'accéder aux données d'un autre profil, de contourner les protections ou de surcharger le service. Une faille se signale en privé, comme indiqué dans <a href="/.well-known/security.txt">security.txt</a>.</p>
+        <h2>Évolution</h2>
+        <p>Ces conditions peuvent changer ; la version en ligne est celle qui s'applique.</p>
+    </section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ cohort.name }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_school_formation_show', {id: cohort.formation.id}) }}">← {{ cohort.formation.name }}</a></p>
+    <h1>{{ cohort.name }}</h1>
+    <p class="muted">{{ cohort.formation.name }} · entrée en {{ cohort.startYear }}</p>
+
+    <section class="card">
+        <h2>Apprentis de la promotion</h2>
+        {% if cohort.apprenticeships is empty %}
+            <p class="muted">Aucun apprenti rattaché.</p>
+        {% else %}
+            <table>
+                <thead><tr><th>Apprenti</th><th>Tuteur</th><th>Entreprise</th><th>Contrat</th></tr></thead>
+                <tbody>
+                    {% for apprenticeship in cohort.apprenticeships %}
+                        <tr>
+                            <td><a href="{{ path('app_tracking_show', {id: apprenticeship.id}) }}">{{ apprenticeship.apprentice.fullName }}</a></td>
+                            <td>{{ apprenticeship.tutor.fullName }}</td>
+                            <td>{{ apprenticeship.company.name }}</td>
+                            <td>{{ apprenticeship.startDate|date('d/m/Y') }} → {{ apprenticeship.endDate|date('d/m/Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Rattacher un apprenti</h2>
+        {{ form_start(form, {attr: {class: 'form'}}) }}
+            {{ form_widget(form) }}
+            <button type="submit">Rattacher</button>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

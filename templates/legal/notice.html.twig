@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block body %}
+    <section class="card">
+        <h1>Mentions légales</h1>
+        <h2>Éditeur</h2>
+        <p>{% include 'legal/_value.html.twig' with {value: legal.publisher} %}, à titre personnel et non commercial.</p>
+        <h2>Contact</h2>
+        <p>{% include 'legal/_value.html.twig' with {value: legal.contact} %}</p>
+        <h2>Hébergement</h2>
+        <p>{% include 'legal/_value.html.twig' with {value: legal.host} %}</p>
+        <h2>Code source</h2>
+        <p>Cursus est un logiciel libre publié sous licence MIT : <a href="https://github.com/Remiverhaeghe/cursus">github.com/Remiverhaeghe/cursus</a>.</p>
+    </section>
+{% endblock %}

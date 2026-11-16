@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block body %}
+    <h1>Bonjour {{ user.firstName }}</h1>
+    {% for cohort in cohorts %}
+        <section class="card cohort">
+            <h2>{{ cohort.aCohort.formation.name }} · {{ cohort.aCohort.name }}</h2>
+            <p>Moyenne de la promotion : <progress max="100" value="{{ cohort.percentage }}">{{ cohort.percentage }} %</progress> {{ cohort.average|number_format(1, ',') }} / 4</p>
+            {% include 'partials/_apprentices_table.html.twig' with {progresses: cohort.aApprentices} %}
+        </section>
+    {% else %}
+        <p class="muted">Aucun apprenti dans tes promotions. Commence par <a href="{{ path('app_school_formations') }}">créer une formation</a>.</p>
+    {% endfor %}
+{% endblock %}

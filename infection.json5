@@ -11,8 +11,8 @@
     },
     "tmpDir": "var/infection",
     "timeout": 10,
-    "minMsi": 95,
-    "minCoveredMsi": 95,
+    "minMsi": 98,
+    "minCoveredMsi": 98,
     "logs": {
         "text": "var/infection/infection.log",
         "summary": "var/infection/summary.log"

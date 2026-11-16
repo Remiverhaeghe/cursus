@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Prépare la base de test (app_test) et, si on donne un nombre, une base par thread
+# d'Infection (app_test1 à app_testN) : schéma à jour et fixtures fictives chargées une fois.
+# Usage : bin/prepare-test-databases [nombre de threads]
+set -euo pipefail
+
+vThreads="${1:-0}"
+for vToken in "" $(seq 1 "$vThreads"); do
+    export TEST_TOKEN="$vToken"
+    php bin/console -e test doctrine:database:drop --force --if-exists --quiet
+    php bin/console -e test doctrine:database:create --quiet
+    php bin/console -e test doctrine:migrations:migrate --no-interaction --quiet
+    php bin/console -e test doctrine:fixtures:load --no-interaction --quiet
+    echo "Base app_test${vToken} prête"
+done

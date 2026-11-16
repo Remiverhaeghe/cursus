@@ -7,6 +7,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Double authentification obligatoire pour l'école et les tuteurs (désactivable pour la démo publique)
+    app.totp_required: '%env(bool:TOTP_REQUIRED)%'
+    # Session fermée après 30 minutes sans requête
+    app.session_idle_timeout: 1800
+    app.mailer_from: '%env(MAILER_FROM)%'
 
 services:
     # default configuration for services in *this* file
@@ -21,3 +26,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+when@test:
+    services:
+        app.test_rate_limiter_storage:
+            class: Symfony\Component\RateLimiter\Storage\InMemoryStorage

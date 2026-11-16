@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+    <h1>Mon compte</h1>
+    <section class="card">
+        <h2>Mes informations</h2>
+        <p>{{ user.fullName }} · {{ user.email }} · {{ user.role.label }}</p>
+        <p>Double authentification : {{ user.totpAuthenticationEnabled ? 'active' : 'inactive' }}{% if not user.totpAuthenticationEnabled %} · <a href="{{ path('app_totp_setup') }}">l'activer</a>{% endif %}</p>
+    </section>
+    <section class="card">
+        <h2>Mes données</h2>
+        <p>Télécharge tout ce que Cursus garde sur toi : ton profil, tes contrats et les évaluations qui te concernent, au format JSON.</p>
+        <p><a class="button" href="{{ path('app_account_export') }}">Télécharger mes données</a></p>
+    </section>
+    <section class="card">
+        <h2>Supprimer mon compte</h2>
+        <p>Ton nom et ton adresse sont effacés et tu ne peux plus te connecter. Les évaluations déjà enregistrées restent, avec un évaluateur anonyme, pour que le suivi des apprentis reste juste.</p>
+        {% if error %}
+            <p class="flash flash-error" role="alert">{{ error }}</p>
+        {% elseif blocker %}
+            <p class="flash" role="status">{{ blocker }}</p>
+        {% endif %}
+        {% if not blocker %}
+            <form method="post" action="{{ path('app_account_delete') }}" class="form">
+                <label for="delete-password">Mot de passe actuel</label>
+                <input type="password" id="delete-password" name="password" autocomplete="current-password" required>
+                <input type="hidden" name="_token" value="{{ csrf_token('account_delete') }}">
+                <button type="submit" class="button-danger">Supprimer définitivement mon compte</button>
+            </form>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -78,6 +78,9 @@ jobs:
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
       - name: Doctrine Schema Validator
         run: docker compose exec -T php bin/console -e test doctrine:schema:validate
+      # Chargées une fois : chaque test tourne ensuite dans une transaction annulée (DAMA)
+      - name: Load test fixtures
+        run: docker compose exec -T php bin/console -e test doctrine:fixtures:load --no-interaction
       - name: Run PHPUnit with coverage
         run: docker compose exec -T -e XDEBUG_MODE=coverage php bin/phpunit --coverage-text --only-summary-for-coverage-text --coverage-clover var/coverage.xml --coverage-xml var/coverage/coverage-xml --log-junit var/coverage/junit.xml
       - name: Minimum coverage

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Double authentification{% endblock %}
+
+{% block body %}
+    <section class="card narrow">
+        <h1>Double authentification</h1>
+        <p>Saisis le code à 6 chiffres affiché par ton application d'authentification.</p>
+        {% if authenticationError %}
+            <p class="flash flash-error" role="alert">Code incorrect.</p>
+        {% endif %}
+        <form method="post" action="{{ checkPathUrl ? checkPathUrl : path(checkPathRoute) }}" class="form">
+            <label for="_auth_code">Code</label>
+            <input id="_auth_code" type="text" name="{{ authCodeParameterName }}" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" required autofocus>
+            {% if isCsrfProtectionEnabled %}
+                <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+            {% endif %}
+            <button type="submit">Valider</button>
+        </form>
+        <p><a href="{{ logoutPath }}">Annuler et se déconnecter</a></p>
+    </section>
+{% endblock %}

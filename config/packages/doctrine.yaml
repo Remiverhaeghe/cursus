@@ -9,7 +9,8 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         validate_xml_mapping: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
+        # snake_case sans le préfixe « a » des attributs : aFirstName devient first_name
+        naming_strategy: App\Doctrine\PrefixedNamingStrategy
         identity_generation_preferences:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
         auto_mapping: true

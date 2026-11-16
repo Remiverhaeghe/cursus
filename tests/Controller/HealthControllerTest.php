@@ -14,7 +14,7 @@ final class HealthControllerTest extends WebTestCase
         $vClient = static::createClient();
         $vClient->request('GET', '/health');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(200);
         self::assertJsonStringEqualsJsonString('{"status":"ok"}', (string) $vClient->getResponse()->getContent());
     }
 }
