@@ -2,6 +2,8 @@
 
 ## Non publié
 
+## 0.1.0 - 2026-11-16
+
 ### Tests plus rapides
 - Fixtures chargées une seule fois, chaque test fonctionnel annulé en fin de transaction (`dama/doctrine-test-bundle`)
 - Tests hors debug : suite fonctionnelle passée de 3 min 33 à 53 s sous Docker pour Windows ; cache de test vidé automatiquement quand le code change
