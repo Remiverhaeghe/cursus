@@ -2,7 +2,7 @@
 
 Suivi des compétences des apprentis, partagé entre l'école, l'entreprise d'accueil et l'apprenti.
 
-Projet personnel écrit de zéro à partir d'un besoin fonctionnel : aucun code d'un autre dépôt n'est repris. Il sert de démonstration publique, avec des **données fictives uniquement**.
+Projet de fin d'études, écrit de zéro à partir d'un besoin fonctionnel : aucun code d'un autre dépôt n'est repris. Il sert de démonstration publique, avec des **données fictives uniquement**.
 
 ## Ce que fait la première version
 

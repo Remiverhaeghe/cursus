@@ -2,6 +2,9 @@
 
 ## Non publié
 
+### Documentation
+- README : Cursus présenté comme projet de fin d'études
+
 ## 0.1.0 - 2026-11-16
 
 ### Tests plus rapides
