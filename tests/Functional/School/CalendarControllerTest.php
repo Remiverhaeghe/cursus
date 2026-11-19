@@ -173,18 +173,19 @@ final class CalendarControllerTest extends AppWebTestCase
         self::assertSelectorTextNotContains('#assessments', 'Épreuve blanche E5');
     }
 
-    /** @return iterable<string, array{string, string}> */
+    /** @return iterable<string, array{string, class-string<CalendarPeriod|PlannedAssessment>}> */
     public static function deletions(): iterable
     {
         yield 'période' => ['periodes', CalendarPeriod::class];
         yield 'évaluation prévue' => ['evaluations', PlannedAssessment::class];
     }
 
+    /** @param class-string<CalendarPeriod|PlannedAssessment> $pClass */
     #[DataProvider('deletions')]
     public function testDeletionNeedsTheTokenAndTheResponsibleSchool(string $pPath, string $pClass): void
     {
-        /** @var CalendarPeriod|PlannedAssessment $vEntity */
         $vEntity = $this->entityManager()->getRepository($pClass)->findOneBy(['aCohort' => $this->cohort()]);
+        self::assertNotNull($vEntity);
         $vUrl = '/ecole/calendrier/'.$pPath.'/'.$vEntity->getId().'/suppression';
 
         $this->loginAs(UserFixtures::SCHOOL);

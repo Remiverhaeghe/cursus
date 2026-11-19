@@ -51,7 +51,7 @@ final class CalendarFormTypesTest extends KernelTestCase
         $vBackwards = $this->form(CalendarPeriodType::class);
         $vBackwards->submit(['place' => 'school', 'startDate' => '2026-09-14', 'endDate' => '2026-09-13']);
         self::assertFalse($vBackwards->isValid());
-        self::assertSame('La période doit finir après son début.', $vBackwards->get('endDate')->getErrors()->current()?->getMessage());
+        self::assertStringContainsString('La période doit finir après son début.', (string) $vBackwards->get('endDate')->getErrors());
     }
 
     public function testAssessmentForm(): void
@@ -94,7 +94,11 @@ final class CalendarFormTypesTest extends KernelTestCase
         self::assertFalse($vTooLong->isValid());
     }
 
-    /** @param class-string $pType */
+    /**
+     * @param class-string $pType
+     *
+     * @return FormInterface<mixed>
+     */
     private function form(string $pType): FormInterface
     {
         $rForm = static::getContainer()->get(FormFactoryInterface::class)->create($pType, null, ['csrf_protection' => false]);
@@ -102,7 +106,11 @@ final class CalendarFormTypesTest extends KernelTestCase
         return $rForm;
     }
 
-    /** @return array<string, string> */
+    /**
+     * @param FormInterface<mixed> $pForm
+     *
+     * @return array<string, string>
+     */
     private static function labels(FormInterface $pForm): array
     {
         $rLabels = [];
@@ -113,7 +121,11 @@ final class CalendarFormTypesTest extends KernelTestCase
         return $rLabels;
     }
 
-    /** @return list<string> */
+    /**
+     * @param FormInterface<mixed> $pForm
+     *
+     * @return list<string>
+     */
     private static function placeLabels(FormInterface $pForm): array
     {
         self::assertTrue($pForm->get('place')->getConfig()->getOption('expanded'));
