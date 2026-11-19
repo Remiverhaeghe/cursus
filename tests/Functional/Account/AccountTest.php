@@ -11,6 +11,7 @@ use App\Entity\Cohort;
 use App\Entity\Company;
 use App\Entity\User;
 use App\Enum\UserRole;
+use App\Repository\CompetenceMessageRepository;
 use App\Tests\Support\AppWebTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 #[CoversClass(AccountController::class)]
 #[CoversClass(AccountExporter::class)]
 #[CoversClass(AccountDeletion::class)]
+#[CoversClass(CompetenceMessageRepository::class)]
 final class AccountTest extends AppWebTestCase
 {
     private const string FREE_ACCOUNT = 'compte.libre@cursus.test';
@@ -65,6 +67,8 @@ final class AccountTest extends AppWebTestCase
         self::assertSame('2027-08-31', $vData['apprenticeships'][0]['end_date']);
         self::assertCount(6, $vData['evaluations']);
         self::assertSame(['C1.1 · Gérer le patrimoine informatique', 1, 'École'], [$vData['evaluations'][0]['competence'], $vData['evaluations'][0]['level'], $vData['evaluations'][0]['context']]);
+        self::assertCount(4, $vData['messages']);
+        self::assertSame(['Lucas Bernard', 'Marc Lefebvre'], array_values(array_unique(array_column($vData['messages'], 'author'))));
         $vRaw = (string) $this->aClient->getResponse()->getContent();
         self::assertStringContainsString("{\n    \"exported_at\"", $vRaw);
         self::assertStringContainsString('Gérer le patrimoine informatique', $vRaw);
@@ -85,6 +89,8 @@ final class AccountTest extends AppWebTestCase
         self::assertCount(2, $vData['apprenticeships']);
         self::assertCount(4, $vData['evaluations']);
         self::assertSame(['Marc Lefebvre'], array_values(array_unique(array_column($vData['evaluations'], 'evaluator'))));
+        self::assertCount(2, $vData['messages']);
+        self::assertSame(['Marc Lefebvre'], array_values(array_unique(array_column($vData['messages'], 'author'))));
     }
 
     public function testFreeAccountIsDeletedAfterPasswordCheck(): void

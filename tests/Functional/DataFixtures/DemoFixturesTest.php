@@ -2,16 +2,21 @@
 
 namespace App\Tests\Functional\DataFixtures;
 
+use App\DataFixtures\CalendarFixtures;
 use App\DataFixtures\CohortFixtures;
 use App\DataFixtures\EvaluationFixtures;
+use App\DataFixtures\ExchangeFixtures;
 use App\DataFixtures\ReferentialFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Apprenticeship;
+use App\Entity\CalendarPeriod;
 use App\Entity\Cohort;
 use App\Entity\Company;
 use App\Entity\Competence;
+use App\Entity\CompetenceMessage;
 use App\Entity\Evaluation;
 use App\Entity\Formation;
+use App\Entity\PlannedAssessment;
 use App\Entity\User;
 use App\Enum\UserRole;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +33,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 #[CoversClass(ReferentialFixtures::class)]
 #[CoversClass(CohortFixtures::class)]
 #[CoversClass(EvaluationFixtures::class)]
+#[CoversClass(CalendarFixtures::class)]
+#[CoversClass(ExchangeFixtures::class)]
 final class DemoFixturesTest extends KernelTestCase
 {
     private const ENTITIES = [
@@ -38,6 +45,9 @@ final class DemoFixturesTest extends KernelTestCase
         Cohort::class,
         Apprenticeship::class,
         Evaluation::class,
+        CalendarPeriod::class,
+        PlannedAssessment::class,
+        CompetenceMessage::class,
     ];
 
     /** @return array<class-string, int> */

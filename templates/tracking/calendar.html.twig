@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier de {{ apprenticeship.apprentice.fullName }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_tracking_show', {id: apprenticeship.id}) }}">← Suivi de {{ apprenticeship.apprentice.fullName }}</a></p>
+    <h1>Calendrier de l'alternance</h1>
+    <p class="muted">{{ apprenticeship.cohort.name }} · contrat du {{ apprenticeship.startDate|date('d/m/Y') }} au {{ apprenticeship.endDate|date('d/m/Y') }}</p>
+
+    <section class="card" id="now">
+        <h2>En ce moment</h2>
+        {% if calendar.current %}
+            <p>{{ calendar.current.place.label }} jusqu'au {{ calendar.current.endDate|date('d/m/Y') }}.</p>
+        {% else %}
+            <p class="muted">Aucune période prévue aujourd'hui.</p>
+        {% endif %}
+        {% if calendar.next %}
+            <p>Ensuite : {{ calendar.next.place.label|lower }} à partir du {{ calendar.next.startDate|date('d/m/Y') }}.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Évaluations à venir</h2>
+        {% if calendar.upcoming is empty %}
+            <p class="muted">Aucune évaluation prévue d'ici la fin du contrat.</p>
+        {% else %}
+            <table id="upcoming">
+                <thead><tr><th>Date</th><th>Intitulé</th><th>Lieu</th></tr></thead>
+                <tbody>
+                    {% for assessment in calendar.upcoming %}
+                        <tr>
+                            <td>{{ assessment.date|date('d/m/Y') }}</td>
+                            <td>{{ assessment.title }}</td>
+                            <td>{{ assessment.place.label }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Rythme de l'alternance</h2>
+        {% if calendar.periods is empty %}
+            <p class="muted">L'école n'a pas encore saisi le calendrier.</p>
+        {% else %}
+            <table id="periods">
+                <thead><tr><th>Lieu</th><th>Du</th><th>Au</th></tr></thead>
+                <tbody>
+                    {% for period in calendar.periods %}
+                        <tr{% if period is same as(calendar.current) %} aria-current="date"{% endif %}>
+                            <td>{{ period.place.label }}{% if period is same as(calendar.current) %} <span class="badge">en cours</span>{% endif %}</td>
+                            <td>{{ period.startDate|date('d/m/Y') }}</td>
+                            <td>{{ period.endDate|date('d/m/Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </section>
+{% endblock %}

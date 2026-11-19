@@ -37,3 +37,11 @@ Contexte : démonstration à données fictives, accessible depuis le portfolio. 
 ## 2026-11-15 · Tests hors debug et transactions annulées
 
 Contexte : la suite fonctionnelle prenait 3 min 33 et Infection sautait la plupart des mutants, faute de temps. Mesure : le mode debug vérifie des centaines de fichiers à chaque démarrage du noyau, très lent à travers le dossier partagé de Docker pour Windows ; hors debug, la même suite prend 53 s. Décision : `APP_DEBUG=0` dans `phpunit.dist.xml`, cache de test vidé par `tests/bootstrap.php` quand un fichier du projet change, fixtures chargées une fois et chaque test annulé par `dama/doctrine-test-bundle`. Écarté : sortir `vendor/` du dossier partagé, qui priverait l'éditeur des sources des dépendances.
+
+## 2026-11-19 · Calendrier par promotion
+
+Contexte : le rythme d'alternance est commun à une promotion. Décision : les périodes et les évaluations prévues appartiennent à la promotion ; le calendrier d'un contrat n'en garde que ce qui tombe pendant le contrat. Le lieu reprend l'énumération `EvaluationContext` (école, entreprise). Deux périodes ne se chevauchent pas. Écarté : un calendrier par contrat, à ressaisir pour chaque apprenti.
+
+## 2026-11-19 · Échanges sur une compétence
+
+Contexte : le tuteur et l'apprenti ont besoin d'un espace pour discuter d'une compétence. Décision : un fil par contrat et par compétence ; seuls le tuteur et l'apprenti écrivent, l'école responsable lit ; un message n'est ni modifié ni supprimé, et l'anonymisation d'un compte garde ses messages sous un nom effacé. Écarté : une messagerie générale, hors du périmètre du projet.
