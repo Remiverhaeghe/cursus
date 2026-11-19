@@ -6,6 +6,7 @@
     <p><a href="{{ path('app_school_formation_show', {id: cohort.formation.id}) }}">← {{ cohort.formation.name }}</a></p>
     <h1>{{ cohort.name }}</h1>
     <p class="muted">{{ cohort.formation.name }} · entrée en {{ cohort.startYear }}</p>
+    <p><a class="button" href="{{ path('app_school_calendar', {id: cohort.id}) }}">Calendrier de l'alternance</a></p>
 
     <section class="card">
         <h2>Apprentis de la promotion</h2>

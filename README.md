@@ -8,9 +8,9 @@ Projet de fin d'études, écrit de zéro à partir d'un besoin fonctionnel : auc
 
 | Profil | Ce qu'il fait |
 |---|---|
-| École | Crée les formations et leur référentiel (blocs, compétences), ouvre les promotions, enregistre les entreprises, rattache chaque apprenti à un tuteur, évalue en contexte « école », suit la progression de chaque apprenti et de la promotion |
-| Tuteur en entreprise | Voit seulement les apprentis de ses contrats, évalue en contexte « entreprise », commente |
-| Apprenti | Consulte sa progression par bloc et par compétence, la courbe de chaque compétence, l'historique et ce qui reste à valider |
+| École | Crée les formations et leur référentiel (blocs, compétences), ouvre les promotions, enregistre les entreprises, rattache chaque apprenti à un tuteur, évalue en contexte « école », suit la progression de chaque apprenti et de la promotion, saisit le calendrier de l'alternance (périodes école et entreprise, évaluations prévues), lit les échanges |
+| Tuteur en entreprise | Voit seulement les apprentis de ses contrats, évalue en contexte « entreprise », commente, échange avec l'apprenti sur chaque compétence |
+| Apprenti | Consulte sa progression par bloc et par compétence, la courbe de chaque compétence, l'historique et ce qui reste à valider, son calendrier et ses évaluations à venir, échange avec son tuteur sur chaque compétence |
 
 Une évaluation est une ligne datée, avec un niveau de 0 à 4. Rien n'est écrasé : le niveau courant d'une compétence est la dernière évaluation, et l'historique donne la courbe. La progression d'un bloc est la moyenne des niveaux courants, les compétences jamais évaluées comptant pour 0 et étant signalées. Une compétence est validée à partir du niveau 3.
 
@@ -60,10 +60,11 @@ Pour une démo ouverte à tous, mets `TOTP_REQUIRED=0` dans `.env.local` : sinon
 
 | Dossier | Rôle |
 |---|---|
-| `src/Entity` | Modèle : `User`, `Formation`, `CompetenceBlock`, `Competence`, `Cohort`, `Company`, `Apprenticeship`, `Evaluation`. Les règles qui doivent toujours tenir sont vérifiées dans les constructeurs |
+| `src/Entity` | Modèle : `User`, `Formation`, `CompetenceBlock`, `Competence`, `Cohort`, `Company`, `Apprenticeship`, `Evaluation`, `CalendarPeriod`, `PlannedAssessment`, `CompetenceMessage`. Les règles qui doivent toujours tenir sont vérifiées dans les constructeurs |
 | `src/Enum` | Profils, niveaux (0 à 4) et contextes d'évaluation |
 | `src/Progress` | Calcul de la progression, sans accès à la base, testé seul |
-| `src/Security/Voter` | `FORMATION_MANAGE`, `APPRENTICESHIP_VIEW`, `APPRENTICESHIP_EVALUATE` |
+| `src/Calendar` | Calendrier d'un contrat (période en cours, suivante, évaluations à venir), sans accès à la base |
+| `src/Security/Voter` | `FORMATION_MANAGE`, `APPRENTICESHIP_VIEW`, `APPRENTICESHIP_EVALUATE`, `EXCHANGE_VIEW`, `EXCHANGE_POST` |
 | `src/Form` et `src/Form/Data` | Formulaires branchés sur de petits objets de saisie typés ; l'entité n'est créée qu'à partir de valeurs validées |
 | `src/Controller` | Une page par besoin : connexion, tableaux de bord, référentiel, promotions, suivi d'un contrat |
 | `src/EventSubscriber` | Double authentification obligatoire, journal des connexions, en-têtes de sécurité |

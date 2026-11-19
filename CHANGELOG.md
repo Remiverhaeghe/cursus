@@ -2,6 +2,19 @@
 
 ## Non publié
 
+### Calendrier de l'alternance
+- L'école saisit pour chaque promotion le rythme école et entreprise (périodes sans chevauchement) et les évaluations prévues, et peut les supprimer
+- Chaque contrat a sa page calendrier : lieu du moment, période suivante, évaluations à venir jusqu'à la fin du contrat et rythme complet
+- Calendrier de démonstration : une semaine à l'école puis deux en entreprise
+
+### Échanges sur les compétences
+- Un fil par compétence entre le tuteur et l'apprenti du contrat ; l'école responsable lit les fils sans y écrire
+- Messages jamais modifiés ni supprimés : tout l'historique reste visible
+- Liste des fils avec le nombre de messages et la date du dernier
+- Messages ajoutés à l'export des données du compte
+- Voters `EXCHANGE_VIEW` et `EXCHANGE_POST`, `FORMATION_MANAGE` étendu aux périodes et évaluations prévues, testés pour chaque couple profil et donnée
+
+
 ### Documentation
 - README : Cursus présenté comme projet de fin d'études
 

@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier · {{ cohort.name }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_school_cohort_show', {id: cohort.id}) }}">← {{ cohort.name }}</a></p>
+    <h1>Calendrier de l'alternance</h1>
+    <p class="muted">{{ cohort.formation.name }} · {{ cohort.name }}</p>
+
+    <section class="card">
+        <h2>Rythme école et entreprise</h2>
+        {% if cohort.periods is empty %}
+            <p class="muted">Aucune période prévue.</p>
+        {% else %}
+            <table id="periods">
+                <thead><tr><th>Lieu</th><th>Du</th><th>Au</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for period in cohort.periods %}
+                        <tr>
+                            <td>{{ period.place.label }}</td>
+                            <td>{{ period.startDate|date('d/m/Y') }}</td>
+                            <td>{{ period.endDate|date('d/m/Y') }}</td>
+                            <td>
+                                <form method="post" action="{{ path('app_school_period_delete', {id: period.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token(delete_token) }}">
+                                    <button type="submit" class="button-danger">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <h3>Ajouter une période</h3>
+        {{ form_start(period_form, {attr: {class: 'form'}}) }}
+            {{ form_widget(period_form) }}
+            <button type="submit">Ajouter la période</button>
+        {{ form_end(period_form) }}
+    </section>
+
+    <section class="card">
+        <h2>Évaluations prévues</h2>
+        {% if cohort.assessments is empty %}
+            <p class="muted">Aucune évaluation prévue.</p>
+        {% else %}
+            <table id="assessments">
+                <thead><tr><th>Date</th><th>Intitulé</th><th>Lieu</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for assessment in cohort.assessments %}
+                        <tr>
+                            <td>{{ assessment.date|date('d/m/Y') }}</td>
+                            <td>{{ assessment.title }}</td>
+                            <td>{{ assessment.place.label }}</td>
+                            <td>
+                                <form method="post" action="{{ path('app_school_assessment_delete', {id: assessment.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token(delete_token) }}">
+                                    <button type="submit" class="button-danger">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <h3>Prévoir une évaluation</h3>
+        {{ form_start(assessment_form, {attr: {class: 'form'}}) }}
+            {{ form_widget(assessment_form) }}
+            <button type="submit">Prévoir l'évaluation</button>
+        {{ form_end(assessment_form) }}
+    </section>
+{% endblock %}

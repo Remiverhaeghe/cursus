@@ -3,17 +3,20 @@
 namespace App\Account;
 
 use App\Entity\Apprenticeship;
+use App\Entity\CompetenceMessage;
 use App\Entity\Evaluation;
 use App\Entity\User;
 use App\Repository\ApprenticeshipRepository;
+use App\Repository\CompetenceMessageRepository;
 use App\Repository\EvaluationRepository;
 
-/** Export des données d'un compte : profil, contrats et évaluations qui le concernent. Jamais l'empreinte du mot de passe ni le secret TOTP. */
+/** Export des données d'un compte : profil, contrats, évaluations et messages qui le concernent. Jamais l'empreinte du mot de passe ni le secret TOTP. */
 final class AccountExporter
 {
     public function __construct(
         private readonly ApprenticeshipRepository $aApprenticeships,
         private readonly EvaluationRepository $aEvaluations,
+        private readonly CompetenceMessageRepository $aMessages,
     ) {
     }
 
@@ -31,6 +34,7 @@ final class AccountExporter
             ],
             'apprenticeships' => array_map(self::apprenticeship(...), $this->aApprenticeships->findInvolving($pUser)),
             'evaluations' => array_map(self::evaluation(...), $this->aEvaluations->findInvolving($pUser)),
+            'messages' => array_map(self::message(...), $this->aMessages->findInvolving($pUser)),
         ];
 
         return $rData;
@@ -61,6 +65,18 @@ final class AccountExporter
             'context' => $pEvaluation->getContext()->label(),
             'evaluator' => $pEvaluation->getEvaluator()->getFullName(),
             'comment' => $pEvaluation->getComment(),
+        ];
+    }
+
+    /** @return array<string, string> */
+    private static function message(CompetenceMessage $pMessage): array
+    {
+        return [
+            'date' => $pMessage->getPostedAt()->format(\DATE_ATOM),
+            'apprentice' => $pMessage->getApprenticeship()->getApprentice()->getFullName(),
+            'competence' => (string) $pMessage->getCompetence(),
+            'author' => $pMessage->getAuthor()->getFullName(),
+            'body' => $pMessage->getBody(),
         ];
     }
 }

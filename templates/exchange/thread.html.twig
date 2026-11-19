@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ competence.code }} · échanges{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_exchange_index', {id: apprenticeship.id}) }}">← Échanges de {{ apprenticeship.apprentice.fullName }}</a></p>
+    <h1>{{ competence }}</h1>
+    <p class="muted">Fil entre {{ apprenticeship.tutor.fullName }} et {{ apprenticeship.apprentice.fullName }}.</p>
+
+    <section class="card">
+        {% if messages is empty %}
+            <p class="muted">Aucun message sur cette compétence.</p>
+        {% else %}
+            <ol id="messages" class="thread">
+                {% for message in messages %}
+                    <li>
+                        <p class="muted">{{ message.author.fullName }} · {{ message.postedAt|date('d/m/Y H:i') }}</p>
+                        <p>{{ message.body|nl2br }}</p>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+    </section>
+
+    {% if form %}
+        <section class="card">
+            <h2>Répondre</h2>
+            {{ form_start(form, {attr: {class: 'form'}}) }}
+                {{ form_widget(form) }}
+                <button type="submit">Envoyer</button>
+            {{ form_end(form) }}
+        </section>
+    {% endif %}
+{% endblock %}

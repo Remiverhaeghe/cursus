@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Échanges · {{ apprenticeship.apprentice.fullName }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_tracking_show', {id: apprenticeship.id}) }}">← Suivi de {{ apprenticeship.apprentice.fullName }}</a></p>
+    <h1>Échanges sur les compétences</h1>
+    <p class="muted">Entre {{ apprenticeship.tutor.fullName }} (tuteur) et {{ apprenticeship.apprentice.fullName }}. Les messages restent dans l'historique.</p>
+
+    <section class="card">
+        <table id="threads">
+            <thead><tr><th>Compétence</th><th>Messages</th><th>Dernier message</th></tr></thead>
+            <tbody>
+                {% for competence in apprenticeship.formation.competences %}
+                    {% set thread = summary[competence.id] ?? null %}
+                    <tr>
+                        <td><a href="{{ path('app_exchange_thread', {id: apprenticeship.id, competence: competence.id}) }}">{{ competence }}</a></td>
+                        <td>{{ thread ? thread.count : 0 }}</td>
+                        <td>{{ thread ? thread.last|date('d/m/Y H:i') : '' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

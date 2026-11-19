@@ -2,18 +2,21 @@
 
 namespace App\Tests\Unit\Security;
 
+use App\Entity\CalendarPeriod;
 use App\Entity\Cohort;
 use App\Entity\Competence;
 use App\Entity\CompetenceBlock;
 use App\Entity\Formation;
+use App\Entity\PlannedAssessment;
 use App\Entity\User;
+use App\Enum\EvaluationContext;
 use App\Enum\UserRole;
 use App\Security\Voter\FormationVoter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
-/** Un test par couple profil et donnée gérée par l'école : formation, bloc, compétence, promotion. */
+/** Un test par couple profil et donnée gérée par l'école : formation, bloc, compétence, promotion, période et évaluation prévue. */
 #[CoversClass(FormationVoter::class)]
 final class FormationVoterTest extends VoterTestCase
 {
@@ -28,7 +31,7 @@ final class FormationVoterTest extends VoterTestCase
             'anonyme' => VoterInterface::ACCESS_DENIED,
         ];
         foreach ($vProfiles as $vProfile => $vExpected) {
-            foreach (['formation', 'bloc', 'compétence', 'promotion'] as $vSubject) {
+            foreach (['formation', 'bloc', 'compétence', 'promotion', 'période', 'évaluation prévue'] as $vSubject) {
                 yield $vProfile.' sur '.$vSubject => [$vProfile, $vSubject, $vExpected];
             }
         }
@@ -40,11 +43,14 @@ final class FormationVoterTest extends VoterTestCase
         $vManager = new User('ecole@cursus.test', UserRole::School, 'Léa', 'Martin');
         $vFormation = new Formation('Développeur web', 'Titre professionnel', $vManager);
         $vBlock = new CompetenceBlock($vFormation, 'B1', 'Front-end');
+        $vCohort = new Cohort($vFormation, 'Promotion 2026', 2026);
         $vSubjects = [
             'formation' => $vFormation,
             'bloc' => $vBlock,
             'compétence' => new Competence($vBlock, 'C1.1', 'Maquetter'),
-            'promotion' => new Cohort($vFormation, 'Promotion 2026', 2026),
+            'promotion' => $vCohort,
+            'période' => new CalendarPeriod($vCohort, EvaluationContext::School, new \DateTimeImmutable('2026-09-07'), new \DateTimeImmutable('2026-09-13')),
+            'évaluation prévue' => new PlannedAssessment($vCohort, 'Épreuve blanche', EvaluationContext::School, new \DateTimeImmutable('2027-01-18')),
         ];
         $vUsers = [
             'responsable' => $vManager,
