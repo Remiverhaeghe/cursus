@@ -49,6 +49,14 @@ final class TrackingControllerTest extends AppWebTestCase
         yield 'autre apprenti' => [UserFixtures::APPRENTICE_SAME_TUTOR, 403, false];
     }
 
+    /** @return iterable<string, array{string, int}> */
+    public static function reportMatrix(): iterable
+    {
+        foreach (self::viewMatrix() as $vLabel => [$vEmail, $vStatus]) {
+            yield $vLabel => [$vEmail, $vStatus];
+        }
+    }
+
     #[DataProvider('viewMatrix')]
     public function testEachProfileSeesWhatItIsAllowedTo(string $pEmail, int $pStatus, bool $pCanEvaluate): void
     {
@@ -63,7 +71,7 @@ final class TrackingControllerTest extends AppWebTestCase
         }
     }
 
-    #[DataProvider('viewMatrix')]
+    #[DataProvider('reportMatrix')]
     public function testEachProfileDownloadsTheReportItIsAllowedTo(string $pEmail, int $pStatus): void
     {
         $this->loginAs($pEmail);

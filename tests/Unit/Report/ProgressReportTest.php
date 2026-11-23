@@ -100,8 +100,9 @@ final class ProgressReportTest extends TestCase
     }
 
     /** Le PDF est écrit en Windows-1252 : un texte accentué s'y cherche dans cet encodage. */
+    /** Texte tel qu'il figure dans le flux PDF : CP1252, parenthèses protégées par une barre oblique. */
     private function win(string $pText): string
     {
-        return (string) iconv('UTF-8', 'CP1252', $pText);
+        return str_replace(['(', ')'], ['\\(', '\\)'], (string) iconv('UTF-8', 'CP1252', $pText));
     }
 }
