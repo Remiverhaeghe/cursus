@@ -86,6 +86,44 @@ final class ProgressReportTest extends TestCase
         self::assertStringContainsString('moyenne 2,00 sur 4', $vFile);
     }
 
+    public function testContentStreamIsExactForTheStandardContract(): void
+    {
+        $vFile = $this->render([
+            $this->evaluation($this->aData->aModel, CompetenceLevel::Mastered, '2026-03-01'),
+            $this->evaluation($this->aData->aInterface, CompetenceLevel::InProgress, '2026-02-10'),
+        ]);
+
+        preg_match('/stream\n(.*)\nendstream/s', $vFile, $vMatch);
+
+        self::assertSame(
+            $this->line(2, 18, 50, '766.8', 'Bilan de compétences')
+            .$this->line(2, 14, 50, '747.2', 'Lucas Blanc')
+            .$this->line(1, 10, 50, '733.2', 'Développeur web · Promotion 2026')
+            .$this->line(1, 10, 50, '719.2', 'Tuteur : Marc Petit · Atelier Lumen')
+            .$this->line(1, 10, 50, '705.2', 'Contrat du 01/09/2026 au 31/08/2027')
+            .$this->line(1, 10, 50, '691.2', 'Bilan établi le 23/11/2026')
+            .$this->line(2, 12, 50, '664.4', 'Progression globale : 50 % (moyenne 2,00 sur 4)')
+            ."0.85 0.85 0.85 rg 50 652.4 300 8 re f\n0.18 0.45 0.30 rg 50 652.4 150 8 re f\n"
+            .$this->line(1, 10, 50, '638.4', '1 compétence(s) validée(s) sur 3, 1 pas encore évaluée(s).')
+            .$this->line(2, 12, 50, '609.6', 'B1 · Front-end : 75 %')
+            ."0.85 0.85 0.85 rg 50 597.6 200 8 re f\n0.18 0.45 0.30 rg 50 597.6 150 8 re f\n"
+            .$this->line(1, 10, 60, '583.6', 'C1.1 Maquetter : Maîtrisée (le 01/03/2026)')
+            .$this->line(1, 10, 60, '569.6', 'C1.2 Intégrer : En cours d\'acquisition (le 10/02/2026)')
+            .$this->line(2, 12, 50, '540.8', 'B2 · Back-end : 0 %')
+            ."0.85 0.85 0.85 rg 50 528.8 200 8 re f\n"
+            .$this->line(1, 10, 60, '514.8', 'C2.1 Base de données : Pas encore évaluée')
+            .$this->line(2, 12, 50, '486', 'Reste à valider')
+            .$this->line(1, 10, 60, '472', '- C1.2 Intégrer')
+            .$this->line(1, 10, 60, '458', '- C2.1 Base de données'),
+            $vMatch[1],
+        );
+    }
+
+    private function line(int $pFont, int $pSize, int $pX, string $pY, string $pText): string
+    {
+        return \sprintf("BT /F%d %d Tf %d %s Td (%s) Tj ET\n", $pFont, $pSize, $pX, $pY, $this->win($pText));
+    }
+
     /** @param list<Evaluation> $pEvaluations */
     private function render(array $pEvaluations): string
     {
@@ -99,8 +137,7 @@ final class ProgressReportTest extends TestCase
         return new Evaluation($this->aData->aApprenticeship, $pCompetence, $this->aData->aTutor, $pLevel, EvaluationContext::Company, new \DateTimeImmutable($pDate));
     }
 
-    /** Le PDF est écrit en Windows-1252 : un texte accentué s'y cherche dans cet encodage. */
-    /** Texte tel qu'il figure dans le flux PDF : CP1252, parenthèses protégées par une barre oblique. */
+    /** Le PDF est écrit en Windows-1252 : un texte accentué s'y cherche dans cet encodage ; texte tel qu'il figure dans le flux PDF : CP1252, parenthèses protégées par une barre oblique. */
     private function win(string $pText): string
     {
         return str_replace(['(', ')'], ['\\(', '\\)'], (string) iconv('UTF-8', 'CP1252', $pText));
