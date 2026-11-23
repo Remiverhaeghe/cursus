@@ -1,15 +1,18 @@
 :root {
-    --ink: #1d2733;
-    --muted: #5d6b7a;
-    --line: #dde3ea;
-    --surface: #ffffff;
-    --background: #f4f6f9;
-    --accent: #2f5d8a;
-    --accent-soft: #e3edf7;
-    --success: #256b42;
-    --warning: #8f5b00;
-    --danger: #b3261e;
-    --radius: 8px;
+    /* Livret d'apprentissage : papier craie, encre verte, laiton des tampons */
+    --ink: #1f2a27;
+    --muted: #5c6760;
+    --line: #d9d2bf;
+    --surface: #fffdf7;
+    --background: #f4efe2;
+    --accent: #0f5c4a;
+    --accent-soft: #dcebe4;
+    --brass: #b58a2e;
+    --success: #1d6a45;
+    --warning: #8a5a00;
+    --danger: #a33b2a;
+    --radius: 6px;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     color: var(--ink);
     background: var(--background);
@@ -30,9 +33,18 @@ a {
     color: var(--accent);
 }
 
+h1,
+h2,
+.brand {
+    font-family: var(--serif);
+    font-weight: 700;
+}
+
 h1 {
-    font-size: 1.6rem;
-    margin: 0 0 1rem;
+    font-size: 1.9rem;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px double var(--brass);
 }
 
 h2 {
@@ -46,14 +58,37 @@ h2 {
     align-items: center;
     gap: 1rem 2rem;
     padding: 0.75rem 1.5rem;
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
+    background: var(--accent);
+    color: #f4efe2;
+    border-bottom: 4px solid var(--brass);
 }
 
+.topbar a {
+    color: #f4efe2;
+}
+
+/* Le nom, précédé d'un tampon rond comme sur un livret */
 .brand {
-    font-weight: 700;
-    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.35rem;
+    font-style: italic;
     text-decoration: none;
+}
+
+.brand::before {
+    content: "C";
+    display: inline-grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 2px solid var(--brass);
+    border-radius: 50%;
+    color: var(--brass);
+    font-style: normal;
+    font-size: 1.05rem;
+    box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 0 3px var(--brass);
 }
 
 .menu {
@@ -63,13 +98,20 @@ h2 {
 }
 
 .menu a {
+    padding: 0.15rem 0;
+    border-bottom: 2px solid transparent;
     text-decoration: none;
+}
+
+.menu a:hover,
+.menu a[aria-current="page"] {
+    border-bottom-color: var(--brass);
 }
 
 .account {
     display: flex;
     gap: 1rem;
-    color: var(--muted);
+    color: #cfd9d2;
     font-size: 0.9rem;
 }
 
@@ -88,12 +130,15 @@ h2 {
     text-align: center;
 }
 
+/* Une page de livret : papier clair, marge verte à gauche */
 .card {
     background: var(--surface);
     border: 1px solid var(--line);
+    border-left: 5px solid var(--accent);
     border-radius: var(--radius);
     padding: 1.25rem 1.5rem;
     margin-bottom: 1.25rem;
+    box-shadow: 0 1px 0 var(--line), 0 6px 14px -10px rgba(31, 42, 39, 0.35);
 }
 
 .card.narrow {
@@ -131,21 +176,34 @@ select,
 textarea {
     padding: 0.5rem 0.6rem;
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-bottom: 2px solid var(--muted);
+    border-radius: 4px 4px 0 0;
     background: var(--surface);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-bottom-color: var(--accent);
 }
 
 button,
 .button {
     display: inline-block;
     margin-top: 0.75rem;
-    padding: 0.55rem 1rem;
+    padding: 0.55rem 1.1rem;
     border: 0;
-    border-radius: 6px;
+    border-bottom: 3px solid var(--brass);
+    border-radius: 4px;
     background: var(--accent);
     color: #fff;
     text-decoration: none;
     cursor: pointer;
+}
+
+button:hover,
+.button:hover {
+    background: #0b4a3b;
 }
 
 .form-errors,
@@ -157,17 +215,20 @@ button,
 
 .flash {
     padding: 0.6rem 0.9rem;
-    border-radius: 6px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
     background: var(--accent-soft);
 }
 
 .flash-success {
-    background: #e2f3e8;
+    border-color: var(--success);
+    background: #d5e9de;
     color: var(--success);
 }
 
 .flash-error {
-    background: #fbe4e2;
+    border-color: var(--danger);
+    background: #f4dcd5;
     color: var(--danger);
 }
 
@@ -190,45 +251,56 @@ td {
 
 th {
     color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
+    border-bottom: 2px solid var(--brass);
 }
 
+/* Niveau d'acquisition en tampon : cadre à l'encre, fond clair, légèrement penché */
 .level {
     display: inline-block;
-    min-width: 2rem;
-    padding: 0.1rem 0.45rem;
-    border-radius: 999px;
+    min-width: 2.1rem;
+    padding: 0.05rem 0.5rem;
+    border: 2px solid currentcolor;
+    border-radius: 4px;
     text-align: center;
-    font-weight: 600;
-    font-size: 0.85rem;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transform: rotate(-2deg);
     background: var(--line);
 }
 
-.level-0 { background: #eceff3; color: var(--muted); }
-.level-1 { background: #fbe4e2; color: var(--danger); }
-.level-2 { background: #fdf0d9; color: var(--warning); }
-.level-3 { background: #e3edf7; color: var(--accent); }
-.level-4 { background: #e2f3e8; color: var(--success); }
+.level-0 { background: #ece7d8; color: var(--muted); }
+.level-1 { background: #f4dcd5; color: var(--danger); }
+.level-2 { background: #f6e6bf; color: var(--warning); }
+.level-3 { background: #dce6f1; color: #234e7a; }
+.level-4 { background: #d5e9de; color: var(--success); }
 
 .badge {
     display: inline-block;
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
+    padding: 0.05rem 0.55rem;
+    border: 1px solid currentcolor;
+    border-radius: 4px;
     font-size: 0.8rem;
     background: var(--accent-soft);
     color: var(--accent);
 }
 
 .badge-warning {
-    background: #fdf0d9;
+    background: #f6e6bf;
     color: var(--warning);
 }
 
+/* Ligne de progression : une piste avec une graduation à chaque quart, un par niveau */
 .progress {
-    height: 0.6rem;
+    position: relative;
+    height: 0.7rem;
+    border: 1px solid var(--line);
     border-radius: 999px;
-    background: var(--line);
+    background: #ece7d8;
     overflow: hidden;
 }
 
@@ -238,14 +310,30 @@ th {
     background: var(--accent);
 }
 
+.progress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent calc(25% - 1px),
+        var(--surface) calc(25% - 1px),
+        var(--surface) 25%
+    );
+}
+
 .sparkline polyline {
     fill: none;
     stroke: var(--accent);
     stroke-width: 2;
+    stroke-linejoin: round;
 }
 
 .sparkline circle {
-    fill: var(--accent);
+    fill: var(--surface);
+    stroke: var(--brass);
+    stroke-width: 2;
 }
 
 .qr {
@@ -317,4 +405,39 @@ th {
 
 .thread p {
     margin: 0 0 0.3rem;
+}
+
+h3 {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    margin: 1.25rem 0 0.5rem;
+}
+
+/* Barre native des progressions : même piste graduée au quart que .progress */
+progress {
+    width: 12rem;
+    max-width: 100%;
+    height: 0.7rem;
+    vertical-align: middle;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #ece7d8;
+    overflow: hidden;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    background: #ece7d8;
+}
+
+progress::-webkit-progress-value {
+    background: var(--accent);
+}
+
+progress::-moz-progress-bar {
+    background: var(--accent);
+}
+
+.card > h2:first-child {
+    margin-top: 0;
 }

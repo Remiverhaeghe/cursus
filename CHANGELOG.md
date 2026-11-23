@@ -2,6 +2,12 @@
 
 ## Non publié
 
+### Identité visuelle : le livret d'apprentissage
+- Papier craie, encre verte et laiton des tampons ; titres en serif, bandeau vert à liseré laiton, pages du livret avec marge verte
+- Niveaux d'acquisition en tampons légèrement penchés, piste de progression graduée au quart, courbe d'évolution aux points laiton
+- Entrée de menu de la page courante soulignée (`aria-current`)
+- Captures d'écran de démonstration produites par le workflow Captures (`tools/captures`) sur les comptes fictifs
+
 ### Calendrier de l'alternance
 - L'école saisit pour chaque promotion le rythme école et entreprise (périodes sans chevauchement) et les évaluations prévues, et peut les supprimer
 - Chaque contrat a sa page calendrier : lieu du moment, période suivante, évaluations à venir jusqu'à la fin du contrat et rythme complet

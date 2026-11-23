@@ -1,0 +1,76 @@
+---
+name: Captures
+
+# Captures d'écran de l'application sur les comptes de démonstration (données fictives),
+# en artefact et dans le journal : pour le README, le portfolio et le profil.
+on:
+  workflow_dispatch: ~
+  pull_request:
+    paths:
+      - "assets/styles/**"
+      - "templates/**"
+      - "tools/captures/**"
+      - ".github/workflows/captures.yaml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: captures-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  captures:
+    name: Captures d'écran
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build Docker images
+        uses: docker/bake-action@v7
+        with:
+          pull: true
+          load: true
+          source: .
+          files: |
+            compose.yaml
+            compose.override.yaml
+          set: |
+            *.cache-from=type=gha,scope=${{github.ref}}
+            *.cache-from=type=gha,scope=refs/heads/main
+      - name: Start services
+        run: docker compose up --wait --no-build
+      - name: Prepare the demo data
+        run: |
+          docker compose exec -T php bin/console doctrine:migrations:migrate --no-interaction
+          docker compose exec -T php bin/console doctrine:fixtures:load --no-interaction
+      - name: Install the browser
+        run: |
+          mkdir -p "$RUNNER_TEMP/pw"
+          cd "$RUNNER_TEMP/pw"
+          npm init -y >/dev/null
+          npm install playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: Captures
+        run: |
+          cp tools/captures/captures.mjs "$RUNNER_TEMP/pw/captures.mjs"
+          cd "$RUNNER_TEMP/pw"
+          CAPTURES_DIR="$GITHUB_WORKSPACE/docs/captures" node captures.mjs
+      # Aperçu dans le journal, lisible par l'API quand l'artefact ne l'est pas
+      - name: Preview in the log
+        if: always()
+        run: |
+          for vFile in docs/captures/cursus-*.png; do
+            echo "=== CAPTURE $(basename "$vFile" .png)"
+            base64 -w 0 "$vFile"
+            echo
+          done
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: captures-cursus
+          path: docs/captures/cursus-*.png
