@@ -441,3 +441,16 @@ progress::-moz-progress-bar {
 .card > h2:first-child {
     margin-top: 0;
 }
+
+/* Chaque ligne d'un formulaire : libellé au-dessus du champ, champ sur toute la largeur */
+.form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.form select,
+.form input:not([type="hidden"]),
+.form textarea {
+    width: 100%;
+}
