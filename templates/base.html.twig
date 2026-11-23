@@ -5,8 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Cursus : suivi des compétences des apprentis entre l'école, le tuteur et l'apprenti. Démonstration avec des données fictives.">
         <meta name="robots" content="noindex">
+        <meta name="theme-color" content="#0f5c4a">
         <title>{% block title %}Cursus{% endblock %} · Cursus</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%232f5d8a%22/><text x=%2216%22 y=%2222%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22white%22>C</text></svg>">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%230f5c4a%22/><circle cx=%2216%22 cy=%2216%22 r=%2211%22 fill=%22none%22 stroke=%22%23b58a2e%22 stroke-width=%222%22/><text x=%2216%22 y=%2222%22 font-size=%2216%22 font-family=%22serif%22 text-anchor=%22middle%22 fill=%22%23b58a2e%22>C</text></svg>">
         {% block javascripts %}
             {% block importmap %}{{ importmap('app', {nonce: app.request.attributes.get('csp_nonce')}) }}{% endblock %}
         {% endblock %}

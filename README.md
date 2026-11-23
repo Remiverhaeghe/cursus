@@ -4,6 +4,24 @@ Suivi des compétences des apprentis, partagé entre l'école, l'entreprise d'ac
 
 Projet de fin d'études, écrit de zéro à partir d'un besoin fonctionnel : aucun code d'un autre dépôt n'est repris. Il sert de démonstration publique, avec des **données fictives uniquement**.
 
+## Aperçu
+
+Sur les comptes de démonstration (données fictives). Le visuel est celui d'un livret d'apprentissage : papier craie, encre verte, laiton des tampons.
+
+| Progression de l'apprenti | Historique d'un contrat |
+|---|---|
+| ![Progression de l'apprenti par bloc et par compétence](docs/captures/cursus-02-progression.png) | ![Historique des évaluations d'un contrat](docs/captures/cursus-03-historique.png) |
+
+| Tableau de bord de l'école | Promotion et contrats |
+|---|---|
+| ![Tableau de bord de l'école](docs/captures/cursus-07-ecole.png) | ![Promotion, apprentis et contrats](docs/captures/cursus-10-promotion.png) |
+
+| Les apprentis d'un tuteur | Échanges sur les compétences |
+|---|---|
+| ![Les apprentis d'un tuteur](docs/captures/cursus-06-tuteur.png) | ![Fils d'échanges entre tuteur et apprenti](docs/captures/cursus-04-echanges.png) |
+
+Les captures sont refaites par le workflow `Captures` (`tools/captures/captures.mjs`) : il démarre l'application, charge les fixtures et photographie chaque profil.
+
 ## Ce que fait la première version
 
 | Profil | Ce qu'il fait |
