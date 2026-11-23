@@ -105,7 +105,7 @@ async function firstHref(page, pattern) {
       await shot(page, 'cursus-04-echanges', exchanges, { full: true });
     }
     if (calendar) {
-      await shot(page, 'cursus-05-calendrier-apprenti', calendar, { full: true });
+      await shot(page, 'cursus-05-calendrier-apprenti', calendar);
     }
   }
   await context.close();
@@ -132,7 +132,7 @@ async function firstHref(page, pattern) {
       await shot(page, 'cursus-10-promotion', cohort, { full: true });
       const calendar = await firstHref(page, '/calendrier$');
       if (calendar) {
-        await shot(page, 'cursus-11-calendrier-ecole', calendar, { full: true });
+        await shot(page, 'cursus-11-calendrier-ecole', calendar);
       }
     }
   }
