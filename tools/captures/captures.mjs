@@ -2,6 +2,7 @@
 // le portfolio et le profil. Lancé par le workflow Captures, une fois l'application démarrée.
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
+import { createHmac } from 'node:crypto';
 
 const base = process.env.CURSUS_URL ?? 'https://localhost:8443';
 const out = process.env.CAPTURES_DIR ?? 'docs/captures';
@@ -10,6 +11,36 @@ mkdirSync(out, { recursive: true });
 
 const browser = await chromium.launch();
 let failures = 0;
+
+// Code à six chiffres de l'application d'authentification (RFC 6238, SHA-1, 30 s)
+function totp(secret, offset = 0) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let bits = '';
+  for (const char of secret.replace(/=+$/, '').toUpperCase()) {
+    bits += alphabet.indexOf(char).toString(2).padStart(5, '0');
+  }
+  const key = Buffer.from(bits.match(/.{8}/g).map((byte) => parseInt(byte, 2)));
+  const counter = Buffer.alloc(8);
+  counter.writeBigUInt64BE(BigInt(Math.floor(Date.now() / 30000) + offset));
+  const hash = createHmac('sha1', key).update(counter).digest();
+  const start = hash[19] & 0xf;
+  const value = ((hash[start] & 0x7f) << 24) | (hash[start + 1] << 16) | (hash[start + 2] << 8) | hash[start + 3];
+
+  return String(value % 1000000).padStart(6, '0');
+}
+
+// Les comptes école et tuteur doivent activer la double authentification à la première connexion
+async function activateTotp(page) {
+  const secret = (await page.textContent('#totp-secret')).trim();
+  for (const offset of [0, -1, 1]) {
+    await page.fill('#code', totp(secret, offset));
+    await Promise.all([page.waitForLoadState('networkidle'), page.click('button[type=submit]')]);
+    if (!page.url().includes('/double-authentification')) {
+      return;
+    }
+  }
+  throw new Error('activation de la double authentification refusée');
+}
 
 async function session(email) {
   const context = await browser.newContext({
@@ -23,6 +54,9 @@ async function session(email) {
   await page.fill('#email', email);
   await page.fill('#password', password);
   await Promise.all([page.waitForLoadState('networkidle'), page.click('button[type=submit]')]);
+  if (page.url().includes('/double-authentification')) {
+    await activateTotp(page);
+  }
 
   return { context, page };
 }
@@ -66,10 +100,10 @@ async function firstHref(page, pattern) {
   if (history) {
     await shot(page, 'cursus-03-historique', history, { full: true });
     const exchanges = await firstHref(page, '/echanges$');
+    const calendar = await firstHref(page, '/calendrier$');
     if (exchanges) {
       await shot(page, 'cursus-04-echanges', exchanges, { full: true });
     }
-    const calendar = await firstHref(page, '/calendrier$');
     if (calendar) {
       await shot(page, 'cursus-05-calendrier-apprenti', calendar, { full: true });
     }
