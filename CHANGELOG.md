@@ -2,6 +2,10 @@
 
 ## Non publié
 
+### Bilan en PDF
+- « Bilan en PDF » sur la page de suivi d'un contrat : progression globale, bloc par bloc, niveau et date de dernière évaluation de chaque compétence, et ce qui reste à valider ; mêmes droits de lecture que la page de suivi (école responsable, tuteur du contrat, apprenti concerné)
+- PDF écrit sans dépendance (`App\Report\SimplePdf`) : texte réel en Helvetica avec accents, barres de progression, pages A4 qui se suivent ; le fichier n'est pas gardé, il est produit à chaque demande
+
 ### Identité visuelle : le livret d'apprentissage
 - Papier craie, encre verte et laiton des tampons ; titres en serif, bandeau vert à liseré laiton, pages du livret avec marge verte
 - Niveaux d'acquisition en tampons légèrement penchés, piste de progression graduée au quart, courbe d'évolution aux points laiton

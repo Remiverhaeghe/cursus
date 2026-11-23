@@ -49,6 +49,14 @@ final class TrackingControllerTest extends AppWebTestCase
         yield 'autre apprenti' => [UserFixtures::APPRENTICE_SAME_TUTOR, 403, false];
     }
 
+    /** @return iterable<string, array{string, int}> */
+    public static function reportMatrix(): iterable
+    {
+        foreach (self::viewMatrix() as $vLabel => [$vEmail, $vStatus]) {
+            yield $vLabel => [$vEmail, $vStatus];
+        }
+    }
+
     #[DataProvider('viewMatrix')]
     public function testEachProfileSeesWhatItIsAllowedTo(string $pEmail, int $pStatus, bool $pCanEvaluate): void
     {
@@ -61,6 +69,39 @@ final class TrackingControllerTest extends AppWebTestCase
             self::assertSelectorTextContains('h1', 'Lucas Bernard');
             $pCanEvaluate ? self::assertSelectorExists('form[name="evaluation"]') : self::assertSelectorNotExists('form[name="evaluation"]');
         }
+    }
+
+    #[DataProvider('reportMatrix')]
+    public function testEachProfileDownloadsTheReportItIsAllowedTo(string $pEmail, int $pStatus): void
+    {
+        $this->loginAs($pEmail);
+
+        $this->aClient->request('GET', '/suivi/'.$this->contract()->getId().'/bilan.pdf');
+
+        self::assertResponseStatusCodeSame($pStatus);
+        if (200 === $pStatus) {
+            $vResponse = $this->aClient->getResponse();
+            self::assertSame('application/pdf', $vResponse->headers->get('Content-Type'));
+            self::assertStringContainsString('attachment; filename=bilan-lucas-bernard-', (string) $vResponse->headers->get('Content-Disposition'));
+            self::assertStringStartsWith('%PDF-1.4', (string) $vResponse->getContent());
+            self::assertStringContainsString('(Lucas Bernard) Tj', (string) $vResponse->getContent());
+        }
+    }
+
+    public function testReportIsNotOfferedToAnonymousVisitors(): void
+    {
+        $this->aClient->request('GET', '/suivi/'.$this->contract()->getId().'/bilan.pdf');
+
+        self::assertResponseRedirects('/connexion');
+    }
+
+    public function testTrackingPageLinksToTheReport(): void
+    {
+        $this->loginAs(UserFixtures::APPRENTICE);
+
+        $this->aClient->request('GET', '/suivi/'.$this->contract()->getId());
+
+        self::assertSelectorExists('a[href$="/bilan.pdf"]');
     }
 
     public function testAnonymousVisitorIsSentToLogin(): void
