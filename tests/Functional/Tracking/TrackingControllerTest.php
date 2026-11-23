@@ -63,6 +63,39 @@ final class TrackingControllerTest extends AppWebTestCase
         }
     }
 
+    #[DataProvider('viewMatrix')]
+    public function testEachProfileDownloadsTheReportItIsAllowedTo(string $pEmail, int $pStatus): void
+    {
+        $this->loginAs($pEmail);
+
+        $this->aClient->request('GET', '/suivi/'.$this->contract()->getId().'/bilan.pdf');
+
+        self::assertResponseStatusCodeSame($pStatus);
+        if (200 === $pStatus) {
+            $vResponse = $this->aClient->getResponse();
+            self::assertSame('application/pdf', $vResponse->headers->get('Content-Type'));
+            self::assertStringContainsString('attachment; filename=bilan-lucas-bernard-', (string) $vResponse->headers->get('Content-Disposition'));
+            self::assertStringStartsWith('%PDF-1.4', (string) $vResponse->getContent());
+            self::assertStringContainsString('(Lucas Bernard) Tj', (string) $vResponse->getContent());
+        }
+    }
+
+    public function testReportIsNotOfferedToAnonymousVisitors(): void
+    {
+        $this->aClient->request('GET', '/suivi/'.$this->contract()->getId().'/bilan.pdf');
+
+        self::assertResponseRedirects('/connexion');
+    }
+
+    public function testTrackingPageLinksToTheReport(): void
+    {
+        $this->loginAs(UserFixtures::APPRENTICE);
+
+        $this->aClient->request('GET', '/suivi/'.$this->contract()->getId());
+
+        self::assertSelectorExists('a[href$="/bilan.pdf"]');
+    }
+
     public function testAnonymousVisitorIsSentToLogin(): void
     {
         $this->aClient->request('GET', '/suivi/'.$this->contract()->getId());

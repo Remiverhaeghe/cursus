@@ -128,7 +128,7 @@ Infection lance une base par thread (`app_test1` à `app_test4`) grâce à `TEST
 
 ## Avancement
 
-Les lots 0 à 7 sont livrés dans la version 0.1.0, voir le [CHANGELOG](CHANGELOG.md) et la [feuille de route](ROADMAP.md). Hors première version : dépôt de fichiers, inscription en ligne, messagerie, export PDF du livret.
+Les lots 0 à 7 sont livrés dans la version 0.1.0, voir le [CHANGELOG](CHANGELOG.md) et la [feuille de route](ROADMAP.md). Hors première version : dépôt de fichiers, inscription en ligne, messagerie. Le bilan d'un contrat s'exporte en PDF depuis la page de suivi.
 
 ## Documentation
 

@@ -8,9 +8,11 @@ use App\Evaluation\EvaluationRecorder;
 use App\Form\Data\EvaluationData;
 use App\Form\EvaluationType;
 use App\Progress\ProgressCalculator;
+use App\Report\ProgressReport;
 use App\Repository\EvaluationRepository;
 use App\Security\Voter\ApprenticeshipVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,5 +55,25 @@ final class TrackingController extends AbstractController
             'evaluations' => array_reverse($vEvaluations),
             'form' => $vForm,
         ], new Response(status: null !== $vForm && $vForm->isSubmitted() ? 422 : 200));
+    }
+
+    /** Bilan du contrat en PDF : mêmes droits de lecture que la page de suivi, rien n'est enregistré. */
+    #[Route('/suivi/{id}/bilan.pdf', name: 'app_tracking_report', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(ApprenticeshipVoter::VIEW, subject: 'pApprenticeship')]
+    public function report(
+        Apprenticeship $pApprenticeship,
+        EvaluationRepository $pEvaluations,
+        ProgressCalculator $pCalculator,
+        ProgressReport $pReport,
+    ): Response {
+        $vProgress = $pCalculator->forApprenticeship($pApprenticeship, $pEvaluations->findForApprenticeship($pApprenticeship));
+        $vToday = new \DateTimeImmutable();
+        $vFile = \sprintf('bilan-%s-%s.pdf', (string) preg_replace('/[^a-z0-9]+/', '-', strtolower((string) iconv('UTF-8', 'ASCII//TRANSLIT', $pApprenticeship->getApprentice()->getFullName()))), $vToday->format('Y-m-d'));
+
+        return new Response($pReport->render($vProgress, $vToday), Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $vFile),
+            'Cache-Control' => 'private, no-store',
+        ]);
     }
 }

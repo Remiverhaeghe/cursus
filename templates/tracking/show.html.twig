@@ -11,6 +11,7 @@
     </p>
     <p class="actions">
         <a class="button" href="{{ path('app_tracking_calendar', {id: apprenticeship.id}) }}">Calendrier</a>
+        <a class="button" href="{{ path('app_tracking_report', {id: apprenticeship.id}) }}">Bilan en PDF</a>
         {% if is_granted('EXCHANGE_VIEW', apprenticeship) %}
             <a class="button" href="{{ path('app_exchange_index', {id: apprenticeship.id}) }}">Échanges</a>
         {% endif %}

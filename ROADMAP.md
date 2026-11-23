@@ -8,4 +8,4 @@
 | C1, C2 | Calendrier de l'alternance avec les évaluations à venir, échanges tuteur et apprenti par compétence | Fait |
 | 9 | Mise en ligne de la démo sur le PC puis le NAS : HTTPS, courriels, Lighthouse et liens en CI, surveillance par nas-monitor | À faire |
 
-Hors première version : dépôt de fichiers, inscription en ligne, messagerie générale (seuls les échanges par compétence existent), export PDF du livret.
+Hors première version : dépôt de fichiers, inscription en ligne, messagerie générale (seuls les échanges par compétence existent). Le bilan d'un contrat s'exporte en PDF depuis la page de suivi.
