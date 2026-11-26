@@ -2,6 +2,7 @@
 
 namespace App\Evaluation;
 
+use App\Audit\AuditLog;
 use App\Entity\Apprenticeship;
 use App\Entity\Evaluation;
 use App\Entity\User;
@@ -17,6 +18,7 @@ final class EvaluationRecorder
         private readonly EntityManagerInterface $aEntityManager,
         private readonly ClockInterface $aClock,
         private readonly LoggerInterface $aLogger,
+        private readonly AuditLog $aAudit,
     ) {
     }
 
@@ -24,6 +26,7 @@ final class EvaluationRecorder
     {
         $rEvaluation = $pData->toEvaluation($pApprenticeship, $pEvaluator, $this->aClock->now());
         $this->aEntityManager->persist($rEvaluation);
+        $this->aAudit->record(AuditLog::EVALUATION, $pEvaluator, 'Évaluation enregistrée');
         $this->aEntityManager->flush();
         $this->aLogger->info('Évaluation enregistrée', [
             'evaluation_id' => $rEvaluation->getId(),

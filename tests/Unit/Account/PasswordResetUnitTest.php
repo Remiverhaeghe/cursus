@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Account;
 
 use App\Account\PasswordReset;
+use App\Audit\AuditLog;
 use App\Entity\PasswordResetToken;
 use App\Entity\User;
 use App\Enum\UserRole;
@@ -136,6 +137,7 @@ final class PasswordResetUnitTest extends TestCase
             $pMailer ?? $this->createStub(MailerInterface::class),
             $this->aClock,
             $pLogger ?? $this->createStub(LoggerInterface::class),
+            $this->createStub(AuditLog::class),
             'no-reply@cursus.test',
         );
     }

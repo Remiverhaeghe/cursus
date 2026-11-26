@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\UserRole;
 use App\Repository\UserRepository;
+use App\Security\BackupCodes;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
@@ -38,8 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(length: 100)]
     private string $aLastName;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    /** Secret TOTP chiffré par App\Security\SecretCipher. */
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $aTotpSecret = null;
+
+    /** @var list<string> empreintes des codes de secours encore valables */
+    #[ORM\Column(type: Types::JSON)]
+    private array $aBackupCodes = [];
 
     public function __construct(string $pEmail, UserRole $pRole, string $pFirstName, string $pLastName)
     {
@@ -109,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->aFirstName.' '.$this->aLastName;
     }
 
+    /** Le secret est confié déjà chiffré (SecretCipher::encrypt). */
     public function enableTotp(string $pSecret): void
     {
         $this->aTotpSecret = $pSecret;
@@ -117,6 +125,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function disableTotp(): void
     {
         $this->aTotpSecret = null;
+        $this->aBackupCodes = [];
+    }
+
+    /**
+     * Remplace tous les codes de secours par ceux-ci ; seules leurs empreintes sont gardées.
+     *
+     * @param list<string> $pPlainCodes
+     */
+    public function replaceBackupCodes(array $pPlainCodes): void
+    {
+        $this->aBackupCodes = array_map(BackupCodes::hash(...), $pPlainCodes);
+    }
+
+    public function countBackupCodes(): int
+    {
+        return \count($this->aBackupCodes);
+    }
+
+    /** Consomme un code de secours : vrai une seule fois par code. */
+    public function consumeBackupCode(string $pCode): bool
+    {
+        $vIndex = array_search(BackupCodes::hash($pCode), $this->aBackupCodes, true);
+        if (false === $vIndex) {
+            return false;
+        }
+        unset($this->aBackupCodes[$vIndex]);
+        $this->aBackupCodes = array_values($this->aBackupCodes);
+
+        return true;
     }
 
     public function isTotpAuthenticationEnabled(): bool
@@ -151,6 +188,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->aLastName = 'supprimé';
         $this->aPassword = '';
         $this->aTotpSecret = null;
+        $this->aBackupCodes = [];
     }
 
     public function __toString(): string

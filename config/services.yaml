@@ -12,6 +12,8 @@ parameters:
     # Session fermée après 30 minutes sans requête
     app.session_idle_timeout: 1800
     app.mailer_from: '%env(MAILER_FROM)%'
+    # Clé de chiffrement des secrets en base (64 caractères hexadécimaux)
+    app.encryption_key: '%env(APP_ENCRYPTION_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -23,6 +25,10 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+
+    App\Security\SecretCipher:
+        arguments:
+            $pHexKey: '%app.encryption_key%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

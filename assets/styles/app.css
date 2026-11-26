@@ -454,3 +454,16 @@ progress::-moz-progress-bar {
 .form textarea {
     width: 100%;
 }
+
+/* Codes de secours : une grille de codes à recopier */
+.backup-codes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+}
+.backup-codes code {
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+}

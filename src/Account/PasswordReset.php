@@ -2,6 +2,7 @@
 
 namespace App\Account;
 
+use App\Audit\AuditLog;
 use App\Entity\PasswordResetToken;
 use App\Entity\User;
 use App\Repository\PasswordResetTokenRepository;
@@ -28,6 +29,7 @@ final class PasswordReset
         private readonly MailerInterface $aMailer,
         private readonly ClockInterface $aClock,
         private readonly LoggerInterface $aLogger,
+        private readonly AuditLog $aAudit,
         #[Autowire('%app.mailer_from%')]
         private readonly string $aMailerFrom,
     ) {
@@ -78,6 +80,7 @@ final class PasswordReset
         }
         $vUser->setPassword($this->aPasswordHasher->hashPassword($vUser, $pPlainPassword));
         $this->aTokens->removeForUser($vUser);
+        $this->aAudit->record(AuditLog::PASSWORD_RESET, $vUser, 'Mot de passe changé par lien');
         $this->aEntityManager->flush();
         $this->aLogger->info('Mot de passe changé par lien', ['user_id' => $vUser->getId()]);
 

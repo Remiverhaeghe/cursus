@@ -5,6 +5,7 @@ namespace App\Tests\Support;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Security\SecretCipher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -12,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /** Base des tests fonctionnels : fixtures fictives chargées une fois, chaque test annulé en fin de transaction. */
 abstract class AppWebTestCase extends WebTestCase
 {
-    /** Secret TOTP de test, attribué aux comptes qui doivent avoir la double authentification active. */
+    /** Secret TOTP de test (chiffré avant d'être enregistré), attribué aux comptes qui doivent avoir la double authentification active. */
     public const string TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
 
     protected KernelBrowser $aClient;
@@ -54,7 +55,7 @@ abstract class AppWebTestCase extends WebTestCase
     {
         $rUser = $this->user($pEmail);
         if ($rUser->getRole()->requiresTotp() && !$rUser->isTotpAuthenticationEnabled()) {
-            $rUser->enableTotp(self::TOTP_SECRET);
+            $rUser->enableTotp(static::getContainer()->get(SecretCipher::class)->encrypt(self::TOTP_SECRET));
             $this->entityManager()->flush();
         }
         $this->aClient->loginUser($rUser);

@@ -5,6 +5,8 @@ namespace App\Tests\Functional\Security;
 use App\Controller\SecurityController;
 use App\DataFixtures\UserFixtures;
 use App\EventSubscriber\TotpEnrollmentSubscriber;
+use App\Security\BackupCodes;
+use App\Security\SecretCipher;
 use App\Tests\Support\AppWebTestCase;
 use OTPHP\TOTP;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -80,12 +82,16 @@ final class TotpSetupTest extends AppWebTestCase
 
         $this->aClient->submitForm('Activer', ['code' => TOTP::createFromSecret($vSecret)->now()]);
 
-        self::assertResponseRedirects('/');
+        self::assertResponseRedirects('/compte/codes-de-secours');
         $vUser = $this->refreshed($this->user(UserFixtures::TUTOR));
         self::assertTrue($vUser->isTotpAuthenticationEnabled());
-        self::assertSame($vSecret, $vUser->getTotpAuthenticationConfiguration()?->getSecret());
-        $this->aClient->followRedirect();
-        $this->aClient->followRedirect();
+        $vStored = (string) $vUser->getTotpAuthenticationConfiguration()?->getSecret();
+        self::assertStringStartsWith(SecretCipher::PREFIX, $vStored);
+        self::assertNotSame($vSecret, $vStored);
+        self::assertSame($vSecret, static::getContainer()->get(SecretCipher::class)->decrypt($vStored));
+        self::assertSame(BackupCodes::COUNT, $vUser->countBackupCodes());
+        $vCodes = $this->aClient->followRedirect();
+        self::assertCount(BackupCodes::COUNT, $vCodes->filter('.backup-codes code'));
         self::assertSelectorTextContains('.flash-success', 'Double authentification activée.');
 
         // Un nouveau passage repart d'un nouveau secret : l'ancien a quitté la session.

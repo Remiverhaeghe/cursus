@@ -2,6 +2,12 @@
 
 ## Non publié
 
+### Comptes et sécurité
+- Secret TOTP chiffré en base avec libsodium ; la clé vient de `APP_ENCRYPTION_KEY` (64 caractères hexadécimaux, `openssl rand -hex 32`), le `.env` suivi n'en porte qu'une valeur de développement. Un secret enregistré avant le chiffrement reste lisible
+- Huit codes de secours à usage unique, créés à l'activation de la double authentification et régénérables depuis « Mon compte » ; seules leurs empreintes sont gardées, ils s'affichent une seule fois et se saisissent dans le champ du code TOTP
+- Commande `app:user:create` : crée un compte école, tuteur ou apprenti, avec un mot de passe provisoire affiché une seule fois
+- Journal des actions (connexions, évaluations, mots de passe, activation de la double authentification, codes de secours, comptes créés ou supprimés) consultable par l'école sur `/ecole/journal`, protégé par un voter ; ni mot de passe, ni jeton, ni adresse IP
+
 ### Bilan en PDF
 - « Bilan en PDF » sur la page de suivi d'un contrat : progression globale, bloc par bloc, niveau et date de dernière évaluation de chaque compétence, et ce qui reste à valider ; mêmes droits de lecture que la page de suivi (école responsable, tuteur du contrat, apprenti concerné)
 - PDF écrit sans dépendance (`App\Report\SimplePdf`) : texte réel en Helvetica avec accents, barres de progression, pages A4 qui se suivent ; le fichier n'est pas gardé, il est produit à chaque demande

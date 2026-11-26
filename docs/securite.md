@@ -20,8 +20,8 @@ Ce qui a de la valeur : les évaluations et la progression des apprentis, les co
 - [x] Limite de tentatives de connexion
 - [x] Message identique pour un compte inconnu et un mauvais mot de passe
 - [x] TOTP obligatoire pour l'école et les tuteurs, confirmé par un code avant activation
-- [ ] Secret TOTP chiffré en base
-- [ ] Codes de secours TOTP
+- [x] Secret TOTP chiffré en base (libsodium, clé `APP_ENCRYPTION_KEY` hors du dépôt)
+- [x] Codes de secours TOTP : 8 codes à usage unique, gardés en empreinte SHA-256, affichés une seule fois
 - [x] Mot de passe oublié : jeton à usage unique de 30 minutes, stocké en empreinte, limite de 3 demandes
 - [x] Mot de passe de 12 caractères au moins, refusé s'il figure dans une fuite connue
 - [x] Autres sessions fermées après un changement de mot de passe
@@ -33,7 +33,7 @@ Ce qui a de la valeur : les évaluations et la progression des apprentis, les co
 - [x] CSP avec nonce, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
 - [ ] HTTPS forcé et HSTS : à la mise en ligne sur un vrai domaine
 - [x] Journal des connexions, des évaluations, des changements de mot de passe et des suppressions de compte, sans donnée sensible
-- [ ] Journal des actions consultable par l'école
+- [x] Journal des actions consultable par l'école (`/ecole/journal`), sans mot de passe, jeton ni adresse IP
 - [x] Export et suppression des données de son compte
 - [x] Secrets hors du dépôt, Gitleaks en CI
 - [x] `SECURITY.md` et `/.well-known/security.txt`

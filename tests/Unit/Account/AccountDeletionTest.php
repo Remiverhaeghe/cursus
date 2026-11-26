@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Account;
 
 use App\Account\AccountDeletion;
+use App\Audit\AuditLog;
 use App\Entity\User;
 use App\Enum\UserRole;
 use App\Repository\ApprenticeshipRepository;
@@ -55,7 +56,7 @@ final class AccountDeletionTest extends TestCase
         $vLogger = $this->createMock(LoggerInterface::class);
         $vLogger->expects(self::once())->method('info')->with('Compte supprimé et anonymisé', ['user_id' => 12]);
 
-        (new AccountDeletion($this->createStub(FormationRepository::class), $this->createStub(ApprenticeshipRepository::class), $vTokens, $vEntityManager, $vLogger))->delete($vUser);
+        (new AccountDeletion($this->createStub(FormationRepository::class), $this->createStub(ApprenticeshipRepository::class), $vTokens, $vEntityManager, $vLogger, $this->createStub(AuditLog::class)))->delete($vUser);
 
         self::assertSame('compte-supprime-12@cursus.invalid', $vUser->getEmail());
     }
@@ -74,6 +75,7 @@ final class AccountDeletionTest extends TestCase
             $this->createStub(PasswordResetTokenRepository::class),
             $this->createStub(EntityManagerInterface::class),
             $this->createStub(LoggerInterface::class),
+            $this->createStub(AuditLog::class),
         );
     }
 }

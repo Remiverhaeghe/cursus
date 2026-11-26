@@ -2,9 +2,11 @@
 
 namespace App\Tests\Unit\EventSubscriber;
 
+use App\Audit\AuditLog;
 use App\Entity\User;
 use App\Enum\UserRole;
 use App\EventSubscriber\LoginAuditSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -37,7 +39,7 @@ final class LoginAuditSubscriberTest extends TestCase
         $vLogger = $this->createMock(LoggerInterface::class);
         $vLogger->expects(self::once())->method('info')->with('Connexion réussie', ['user_id' => 42]);
 
-        (new LoginAuditSubscriber($vLogger))->onLoginSuccess($this->successEvent($vUser));
+        (new LoginAuditSubscriber($vLogger, $this->createStub(AuditLog::class), $this->createStub(EntityManagerInterface::class)))->onLoginSuccess($this->successEvent($vUser));
     }
 
     public function testSuccessWithAnotherUserTypeLogsNoId(): void
@@ -45,7 +47,7 @@ final class LoginAuditSubscriberTest extends TestCase
         $vLogger = $this->createMock(LoggerInterface::class);
         $vLogger->expects(self::once())->method('info')->with('Connexion réussie', ['user_id' => null]);
 
-        (new LoginAuditSubscriber($vLogger))->onLoginSuccess($this->successEvent(new InMemoryUser('lea', null)));
+        (new LoginAuditSubscriber($vLogger, $this->createStub(AuditLog::class), $this->createStub(EntityManagerInterface::class)))->onLoginSuccess($this->successEvent(new InMemoryUser('lea', null)));
     }
 
     public function testFailureLogsIpAndReason(): void
@@ -55,7 +57,7 @@ final class LoginAuditSubscriberTest extends TestCase
         $vLogger = $this->createMock(LoggerInterface::class);
         $vLogger->expects(self::once())->method('warning')->with('Échec de connexion', ['ip' => '192.0.2.10', 'reason' => 'Invalid credentials.']);
 
-        (new LoginAuditSubscriber($vLogger))->onLoginFailure($vEvent);
+        (new LoginAuditSubscriber($vLogger, $this->createStub(AuditLog::class), $this->createStub(EntityManagerInterface::class)))->onLoginFailure($vEvent);
     }
 
     private function successEvent(UserInterface $pUser): LoginSuccessEvent

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Codes de secours{% endblock %}
+
+{% block body %}
+    <h1>Codes de secours</h1>
+    <section class="card">
+        <p>Chaque code ne sert qu'une fois, à la place du code de ton application, si tu perds ton téléphone. Note-les maintenant : ils ne seront plus affichés.</p>
+        <ul class="backup-codes">
+            {% for code in codes %}
+                <li><code>{{ code }}</code></li>
+            {% endfor %}
+        </ul>
+        <p><a class="button" href="{{ path('app_account') }}">J'ai noté mes codes</a></p>
+    </section>
+{% endblock %}

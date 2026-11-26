@@ -3,6 +3,7 @@
     <a href="{{ path('app_school_home') }}"{% if route == 'app_school_home' %} aria-current="page"{% endif %}>Tableau de bord</a>
     <a href="{{ path('app_school_formations') }}"{% if route == 'app_school_formations' %} aria-current="page"{% endif %}>Formations</a>
     <a href="{{ path('app_school_companies') }}"{% if route == 'app_school_companies' %} aria-current="page"{% endif %}>Entreprises</a>
+    <a href="{{ path('app_school_audit') }}"{% if route == 'app_school_audit' %} aria-current="page"{% endif %}>Journal</a>
 {% elseif is_granted('ROLE_TUTOR') %}
     <a href="{{ path('app_tutor_home') }}"{% if route == 'app_tutor_home' %} aria-current="page"{% endif %}>Mes apprentis</a>
 {% elseif is_granted('ROLE_APPRENTICE') %}
