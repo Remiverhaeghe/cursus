@@ -85,6 +85,7 @@ Pour une démo ouverte à tous, mets `TOTP_REQUIRED=0` dans `.env.local` : sinon
 | `src/Security/Voter` | `FORMATION_MANAGE`, `APPRENTICESHIP_VIEW`, `APPRENTICESHIP_EVALUATE`, `EXCHANGE_VIEW`, `EXCHANGE_POST` |
 | `src/Form` et `src/Form/Data` | Formulaires branchés sur de petits objets de saisie typés ; l'entité n'est créée qu'à partir de valeurs validées |
 | `src/Controller` | Une page par besoin : connexion, tableaux de bord, référentiel, promotions, suivi d'un contrat |
+| `src/Audit`, `src/Command` | Journal des actions, commande `app:user:create` |
 | `src/EventSubscriber` | Double authentification obligatoire, journal des connexions, en-têtes de sécurité |
 | `src/Doctrine` | Nommage des colonnes sans le préfixe `a` des attributs |
 
@@ -92,7 +93,7 @@ Les attributs suivent la convention du projet (`a` pour un attribut, `p` pour un
 
 ## Sécurité
 
-Mots de passe en Argon2id, jeton CSRF sur tous les formulaires et sur la déconnexion, 5 essais de connexion par 15 minutes, même message pour un compte inconnu et un mauvais mot de passe. Mot de passe oublié par lien à usage unique de 30 minutes, session fermée après 30 minutes d'inactivité, export et suppression de son compte depuis « Mon compte ». Double authentification TOTP pour l'école et les tuteurs. Chaque accès à une donnée passe par un voter, testé pour chaque couple profil et donnée. Politique CSP stricte avec un nonce par requête, pas d'affichage dans un cadre. Les connexions et les évaluations sont journalisées avec des identifiants seulement. Gitleaks tourne en CI.
+Mots de passe en Argon2id, jeton CSRF sur tous les formulaires et sur la déconnexion, 5 essais de connexion par 15 minutes, même message pour un compte inconnu et un mauvais mot de passe. Mot de passe oublié par lien à usage unique de 30 minutes, session fermée après 30 minutes d'inactivité, export et suppression de son compte depuis « Mon compte ». Double authentification TOTP pour l'école et les tuteurs, secret chiffré en base et huit codes de secours à usage unique. Le journal des actions (connexions, évaluations, mots de passe, comptes créés ou supprimés) se lit dans l'espace école. Chaque accès à une donnée passe par un voter, testé pour chaque couple profil et donnée. Politique CSP stricte avec un nonce par requête, pas d'affichage dans un cadre. Les connexions et les évaluations sont journalisées avec des identifiants seulement. Gitleaks tourne en CI.
 
 ## Contrôles qualité
 

@@ -8,6 +8,13 @@
         <h2>Mes informations</h2>
         <p>{{ user.fullName }} · {{ user.email }} · {{ user.role.label }}</p>
         <p>Double authentification : {{ user.totpAuthenticationEnabled ? 'active' : 'inactive' }}{% if not user.totpAuthenticationEnabled %} · <a href="{{ path('app_totp_setup') }}">l'activer</a>{% endif %}</p>
+        {% if user.totpAuthenticationEnabled %}
+            <p>Codes de secours restants : {{ user.countBackupCodes }}</p>
+            <form method="post" action="{{ path('app_backup_codes_regenerate') }}" class="form">
+                <input type="hidden" name="_token" value="{{ csrf_token('backup_codes') }}">
+                <button type="submit" class="button">Générer de nouveaux codes de secours</button>
+            </form>
+        {% endif %}
     </section>
     <section class="card">
         <h2>Mes données</h2>

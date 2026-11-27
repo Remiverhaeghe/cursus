@@ -183,4 +183,43 @@ final class AccountTest extends AppWebTestCase
 
         return $rUser;
     }
+
+    public function testRegeneratingBackupCodesReplacesTheOldOnesAndShowsThemOnce(): void
+    {
+        $vUser = $this->loginAs(UserFixtures::SCHOOL);
+        $vUser->replaceBackupCodes(['abcde-fghjk']);
+        $this->entityManager()->flush();
+        $this->aClient->request('GET', '/compte');
+        self::assertSelectorTextContains('body', 'Codes de secours restants : 1');
+
+        $this->aClient->submitForm('Générer de nouveaux codes de secours');
+        self::assertResponseRedirects('/compte/codes-de-secours');
+        $vCodes = $this->aClient->followRedirect();
+        self::assertCount(8, $vCodes->filter('.backup-codes code'));
+
+        $vReloaded = $this->refreshed($this->user(UserFixtures::SCHOOL));
+        self::assertSame(8, $vReloaded->countBackupCodes());
+        self::assertFalse($vReloaded->consumeBackupCode('abcde-fghjk'));
+
+        $this->aClient->request('GET', '/compte/codes-de-secours');
+        self::assertResponseRedirects('/compte');
+    }
+
+    public function testRegenerationNeedsTheTokenAndAnActiveTotp(): void
+    {
+        $this->loginAs(UserFixtures::SCHOOL);
+        $this->aClient->request('POST', '/compte/codes-de-secours/regenerer', ['_token' => 'faux']);
+        self::assertResponseRedirects('/compte');
+        $this->aClient->followRedirect();
+        self::assertSelectorTextContains('.flash-error', 'Le formulaire a expiré');
+        self::assertSame(0, $this->refreshed($this->user(UserFixtures::SCHOOL))->countBackupCodes());
+
+        $this->aClient->loginUser($this->user(UserFixtures::APPRENTICE));
+        $vCrawler = $this->aClient->request('GET', '/compte');
+        self::assertCount(0, $vCrawler->filter('form[action="/compte/codes-de-secours/regenerer"]'));
+        $this->aClient->request('POST', '/compte/codes-de-secours/regenerer', ['_token' => 'faux']);
+        self::assertResponseRedirects('/compte');
+        $this->aClient->followRedirect();
+        self::assertSelectorTextContains('.flash-error', 'Active d\'abord');
+    }
 }

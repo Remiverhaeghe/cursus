@@ -2,6 +2,7 @@
 
 namespace App\Account;
 
+use App\Audit\AuditLog;
 use App\Entity\User;
 use App\Enum\UserRole;
 use App\Repository\ApprenticeshipRepository;
@@ -22,6 +23,7 @@ final class AccountDeletion
         private readonly PasswordResetTokenRepository $aTokens,
         private readonly EntityManagerInterface $aEntityManager,
         private readonly LoggerInterface $aLogger,
+        private readonly AuditLog $aAudit,
     ) {
     }
 
@@ -43,6 +45,7 @@ final class AccountDeletion
         $vUserId = $pUser->getId();
         $this->aTokens->removeForUser($pUser);
         $pUser->anonymize();
+        $this->aAudit->record(AuditLog::ACCOUNT_DELETED, $pUser, 'Compte supprimé et anonymisé');
         $this->aEntityManager->flush();
         $this->aLogger->info('Compte supprimé et anonymisé', ['user_id' => $vUserId]);
     }

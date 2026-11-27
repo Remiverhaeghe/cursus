@@ -6,6 +6,7 @@ use App\Controller\HomeController;
 use App\Controller\SecurityController;
 use App\DataFixtures\UserFixtures;
 use App\EventSubscriber\LoginAuditSubscriber;
+use App\Security\SecretCipher;
 use App\Tests\Support\AppWebTestCase;
 use OTPHP\TOTP;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -100,6 +101,34 @@ final class LoginTest extends AppWebTestCase
         $this->followRedirectsUntil('/ecole');
         self::assertResponseStatusCodeSame(200);
         self::assertSelectorTextContains('h1', 'Claire');
+    }
+
+    public function testEncryptedSecretAndBackupCodeBothOpenTheSecondStep(): void
+    {
+        $vUser = $this->user(UserFixtures::SCHOOL);
+        $vUser->enableTotp(static::getContainer()->get(SecretCipher::class)->encrypt(self::TOTP_SECRET));
+        $vUser->replaceBackupCodes(['abcde-fghjk']);
+        $this->entityManager()->flush();
+
+        $this->submitLogin(UserFixtures::SCHOOL, UserFixtures::PASSWORD);
+        $this->followRedirectsUntil('/2fa');
+        $this->aClient->submitForm('Valider', ['_auth_code' => TOTP::createFromSecret(self::TOTP_SECRET)->now()]);
+        $this->followRedirectsUntil('/ecole');
+
+        $this->aClient->restart();
+        $this->submitLogin(UserFixtures::SCHOOL, UserFixtures::PASSWORD);
+        $this->followRedirectsUntil('/2fa');
+        $this->aClient->submitForm('Valider', ['_auth_code' => 'ABCDE-fghjk']);
+        $this->followRedirectsUntil('/ecole');
+        self::assertSame(0, $this->refreshed($this->user(UserFixtures::SCHOOL))->countBackupCodes());
+
+        // Le même code ne sert qu'une fois
+        $this->aClient->restart();
+        $this->submitLogin(UserFixtures::SCHOOL, UserFixtures::PASSWORD);
+        $this->followRedirectsUntil('/2fa');
+        $this->aClient->submitForm('Valider', ['_auth_code' => 'abcde-fghjk']);
+        $this->followRedirectsUntil('/2fa');
+        self::assertSelectorTextContains('.flash-error', 'Code incorrect.');
     }
 
     public function testLogoutEndsTheSession(): void

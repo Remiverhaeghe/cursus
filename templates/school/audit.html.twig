@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Journal des actions{% endblock %}
+
+{% block body %}
+    <h1>Journal des actions</h1>
+    <p>Les {{ limit }} dernières actions, les plus récentes d'abord. Le journal ne garde ni mot de passe, ni jeton, ni adresse IP.</p>
+    {% if entries is empty %}
+        <p class="flash" role="status">Aucune action enregistrée pour le moment.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr><th scope="col">Date</th><th scope="col">Action</th><th scope="col">Compte</th><th scope="col">Détail</th></tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.occurredAt|date('d/m/Y H:i') }}</td>
+                        <td>{{ labels[entry.action]|default(entry.action) }}</td>
+                        <td>{{ entry.actor ? entry.actor.fullName : '—' }}</td>
+                        <td>{{ entry.summary }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

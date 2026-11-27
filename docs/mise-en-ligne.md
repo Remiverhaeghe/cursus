@@ -45,6 +45,9 @@ Liste du skill `mise-en-ligne-web-remi`. `[x]` fait, `[ ]` reste à faire, `[-]`
 - [x] Suppression du compte par anonymisation
 - [x] Conservation : remise à zéro régulière de la démo
 
+- [ ] `APP_ENCRYPTION_KEY` générée (`openssl rand -hex 32`) dans le fichier d'environnement de production, sauvegardée à part de la base : sans elle, les secrets TOTP ne se relisent plus
+- [ ] Premier compte école créé avec `docker compose exec php bin/console app:user:create`
+
 ## Domaine et courriels
 
 - [ ] SPF, DKIM et DMARC sur le domaine d'envoi, `MAILER_FROM` sur ce domaine
